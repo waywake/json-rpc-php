@@ -4,6 +4,7 @@ namespace JsonRpc\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use JsonRpc\Server\JsonRpcServer;
+use JsonRpc\Server\JsonRpcTool;
 use Laravel\Lumen\Application;
 
 class LumenServerServiceProvider extends ServiceProvider
@@ -27,7 +28,6 @@ class LumenServerServiceProvider extends ServiceProvider
         ], function () {
 
             $this->app->configure('rpc');
-
             $config = config('rpc.server');
 
             $callback = function () use ($config) {
@@ -39,15 +39,14 @@ class LumenServerServiceProvider extends ServiceProvider
             $this->app->router->get('json-rpc-v2.json', $callback);
 
             if (function_exists('env') && env('APP_DEBUG')) {
-                $this->app->router->get('tools.html', function () {
-                    $doc = new JsonRpcTool();
-                    return $doc->render();
-                });
 
-//                $this->app->router->get('doc.html', function () {
-//                $doc = new JsonRpcDoc(base_path('app/Rpc/'));
-//                return $doc->render();
-//            });
+                $tool = function () use ($config) {
+                    $doc = new JsonRpcTool($config);
+                    return $doc->render();
+                };
+
+                $this->app->router->get('tool.html', $tool);
+                $this->app->router->post('tool.html', $tool);
 
             }
         });

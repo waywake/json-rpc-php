@@ -50,7 +50,7 @@ class JsonRpcServer
             } else {
                 list($method, $params, $id) = $this->parseJson($this->request->getContent());
             }
-
+            
             list($class, $function) = $this->parseMethodWithMap($method);
 //            dump($class,$function);exit;
 

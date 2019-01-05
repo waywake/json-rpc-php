@@ -7,19 +7,27 @@ use JsonRpc\Exception\RpcServerException;
 
 class Client
 {
-    protected $id;
+    protected $config;
 
+    protected $id;
     protected $http;
 
-    public function __construct()
+    public function __construct($config)
     {
+        $this->config = $config;
         $this->id = 0;
-        $this->http = new \GuzzleHttp\Client([
-            'base_uri' => 'http://auth.lo.haowumc.com',
+    }
+
+    public function endpoint($k)
+    {
+        $config = $this->config[$k];
+
+        $default = [
             'timeout' => 3,
             'allow_redirects' => false,
-//            'proxy' => '192.168.16.1:10'
-        ]);
+        ];
+
+        $this->http = new \GuzzleHttp\Client(array_merge($default,$config));
     }
 
     /**
@@ -58,11 +66,11 @@ class Client
     protected function post($payload)
     {
         try {
-            $resp = $this->http->request('POST', 'rpc/gateway.json', [
+            $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
                 'json' => $payload
             ]);
         } catch (ServerException $e) {
-            throw new RpcServerException($e->getMessage(),$e->getCode());
+            throw new RpcServerException($e->getMessage(), $e->getCode());
         }
 
         try {
