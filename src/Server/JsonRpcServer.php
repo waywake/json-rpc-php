@@ -29,18 +29,30 @@ class JsonRpcServer
 
     public function __construct($config)
     {
+        $this->config = $config;
         $this->request = function_exists('app') ? app('request') : Request::capture();
+
+        $this->map = require_once $config['map'];
     }
 
     public function handler()
     {
-        if ($this->request->getContentType() != 'json') {
-            return $this->error(self::Rpc_Error_Invalid_Request);
-        }
+//        if ($this->request->getContentType() != 'json') {
+//            return $this->error(self::Rpc_Error_Invalid_Request);
+//        }
 
         try {
-            list($method, $params, $id) = $this->parseJson($this->request->getContent());
-            list($class, $function) = $this->parseMethod($method);
+
+            if ($this->request->method() == Request::METHOD_GET) {
+                $method = $this->request->input('method');
+                $id = $this->request->input('id');
+                $params = \GuzzleHttp\json_decode($this->request->input('params'),true);
+            } else {
+                list($method, $params, $id) = $this->parseJson($this->request->getContent());
+            }
+
+            list($class, $function) = $this->parseMethodWithMap($method);
+//            dump($class,$function);exit;
 
             if (!class_exists($class) || !method_exists($class, $function)) {
                 return $this->error(self::Rpc_Error_NOT_FOUND);
@@ -66,6 +78,11 @@ class JsonRpcServer
         $params = $data['params'];
         $id = $data['id'];
         return [$method, $params, $id];
+    }
+
+    protected function parseMethodWithMap($method)
+    {
+        return isset($this->map[$method]) ? $this->map[$method] : ['', ''];
     }
 
     protected function parseMethod($method)

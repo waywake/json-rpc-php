@@ -2,6 +2,8 @@
 
 namespace JsonRpc\Server;
 
+use Illuminate\Http\JsonResponse;
+
 class JsonRpcMethod
 {
     protected $id;

@@ -1,4 +1,5 @@
 <?php
+
 namespace JsonRpc\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -25,9 +26,11 @@ class LumenServerServiceProvider extends ServiceProvider
 //            'middleware' => 'rpc',
         ], function () {
 
+            $this->app->configure('rpc');
+
             $config = config('rpc.server');
 
-            $callback = function () use($config) {
+            $callback = function () use ($config) {
                 $server = new JsonRpcServer($config);
                 return $server->handler();
             };
@@ -35,10 +38,18 @@ class LumenServerServiceProvider extends ServiceProvider
             $this->app->router->post('json-rpc-v2.json', $callback);
             $this->app->router->get('json-rpc-v2.json', $callback);
 
-//            $this->app->router->get('doc.html', function () {
+            if (function_exists('env') && env('APP_DEBUG')) {
+                $this->app->router->get('tools.html', function () {
+                    $doc = new JsonRpcTool();
+                    return $doc->render();
+                });
+
+//                $this->app->router->get('doc.html', function () {
 //                $doc = new JsonRpcDoc(base_path('app/Rpc/'));
 //                return $doc->render();
 //            });
+
+            }
         });
     }
 
