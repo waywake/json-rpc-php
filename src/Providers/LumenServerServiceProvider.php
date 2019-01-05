@@ -21,20 +21,24 @@ class LumenServerServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->router->group([
+            'prefix' => 'rpc'
 //            'middleware' => 'rpc',
         ], function () {
 
-            $callback = function () {
-                $server = new JsonRpcServer();
+            $config = config('rpc.server');
+
+            $callback = function () use($config) {
+                $server = new JsonRpcServer($config);
                 return $server->handler();
             };
 
-            $this->app->router->post('rpc/gateway.json', $callback);
-            $this->app->router->get('rpc/gateway.json', $callback);
-            $this->app->router->get('rpc/doc.html', function () {
-                $doc = new JsonRpcDoc(base_path('app/Rpc/'));
-                return $doc->render();
-            });
+            $this->app->router->post('json-rpc-v2.json', $callback);
+            $this->app->router->get('json-rpc-v2.json', $callback);
+
+//            $this->app->router->get('doc.html', function () {
+//                $doc = new JsonRpcDoc(base_path('app/Rpc/'));
+//                return $doc->render();
+//            });
         });
     }
 
