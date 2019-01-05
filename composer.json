@@ -3,7 +3,9 @@
     "type": "library",
     "description": "json rpc server/client.",
     "require": {
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "illuminate/support": "^5.7",
+        "illuminate/http": "^5.7"
     },
     "autoload": {
         "psr-4": {
