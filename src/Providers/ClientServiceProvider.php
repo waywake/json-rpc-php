@@ -23,7 +23,7 @@ class ClientServiceProvider extends ServiceProvider
 
         foreach ($config as $k => $item) {
             $this->app->singleton('rpc.' . $k, function () use ($k) {
-                app('rpc')->endpoint($k);
+                return app('rpc')->endpoint($k);
             });
         }
     }

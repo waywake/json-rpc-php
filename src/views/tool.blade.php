@@ -2,7 +2,7 @@
 <head>
     <title>Json Rpc Debug Tool</title>
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcss.com/highlight.js/7.3/styles/dark.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/highlight.js/9.13.1/styles/ocean.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -85,7 +85,7 @@
                     <h5>Result:</h5>
 
                     <div class="col-md-12">
-                        <pre><code class="html">{{$result}}</code></pre>
+                        <pre><code class="json">{{$result}}</code></pre>
                     </div>
                 @endif
             </div>
@@ -98,6 +98,7 @@
 <script>window.jQuery || document.write('<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.slim.js"><\/script>')</script>
 <script src="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/json.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>

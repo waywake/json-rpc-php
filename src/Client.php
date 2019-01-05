@@ -27,7 +27,8 @@ class Client
             'allow_redirects' => false,
         ];
 
-        $this->http = new \GuzzleHttp\Client(array_merge($default,$config));
+        $this->http = new \GuzzleHttp\Client(array_merge($default, $config));
+        return $this;
     }
 
     /**
@@ -83,7 +84,7 @@ class Client
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
-            throw new RpcServerException('json decode error');
+            throw new RpcServerException('json decode error', -32700);
         }
     }
 

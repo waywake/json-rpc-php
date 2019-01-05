@@ -40,7 +40,7 @@ class JsonRpcTool
             $method = $request->input('method');
 
             try {
-                $result = app('rpc')->call($method, $params);
+                $result = app('rpc.auth')->call($method, $params);
                 $view->share('result', json_encode($result, JSON_PRETTY_PRINT));
             } catch (RpcServerException $exception) {
                 $view->share('error', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
