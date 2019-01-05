@@ -1,5 +1,6 @@
 {
     "name": "paidian/json-rpc",
+    "type": "library",
     "description": "json rpc server/client.",
     "require": {
         "guzzlehttp/guzzle": "^6.3"
@@ -10,4 +11,3 @@
         }
     }
 }
-w
