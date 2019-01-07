@@ -10,11 +10,18 @@ class Client
     protected $config;
 
     protected $id;
+    /**
+     * @var \GuzzleHttp\Client
+     */
     protected $http;
 
     public function __construct($config)
     {
-        $this->config = $config;
+        $default = [
+            'app' => '***',
+        ];
+
+        $this->config = array_merge($default, $config);
         $this->id = 0;
     }
 
@@ -68,7 +75,10 @@ class Client
     {
         try {
             $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
-                'json' => $payload
+                'headers' => [
+                    'hwmc_app' => $this->config['app'],
+                ],
+                'json' => $payload,
             ]);
         } catch (ServerException $e) {
             throw new RpcServerException($e->getMessage(), $e->getCode());
