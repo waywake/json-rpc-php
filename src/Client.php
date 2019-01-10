@@ -4,18 +4,21 @@ namespace JsonRpc;
 
 use GuzzleHttp\Exception\ServerException;
 use JsonRpc\Exception\RpcServerException;
+use Monolog\Logger;
 
 class Client
 {
     protected $config;
 
     protected $id;
+
+    protected $logger;
     /**
      * @var \GuzzleHttp\Client
      */
     protected $http;
 
-    public function __construct($config)
+    public function __construct($config, Logger $logger)
     {
         $default = [
             'app' => '***',
@@ -23,6 +26,7 @@ class Client
 
         $this->config = array_merge($default, $config);
         $this->id = 0;
+        $this->logger = $logger;
     }
 
     public function endpoint($k)
@@ -90,6 +94,7 @@ class Client
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 throw new RpcServerException($body['error']['message'], $body['error']['code']);
             }
+            $this->logger->info('this is a test call log');
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
