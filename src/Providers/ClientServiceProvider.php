@@ -4,6 +4,7 @@ namespace JsonRpc\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use JsonRpc\Client;
+use JsonRpc\Logging\LogstashFormatter;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -21,6 +22,7 @@ class ClientServiceProvider extends ServiceProvider
 
         $config = config('rpc.client');
         $stream = new StreamHandler($this->app->storagePath()."/logs/rpc_monitor_".date("Ymd").".log");
+        $stream->setFormatter(LogstashFormatter::class);
         $logger = new Logger('RPC.LOGGER');
         $logger->pushHandler($stream);
         $this->app->singleton('rpc', function () use ($config, $logger) {
