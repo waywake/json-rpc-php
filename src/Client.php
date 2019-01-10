@@ -90,11 +90,10 @@ class Client
 
         try {
             $body = \GuzzleHttp\json_decode($resp->getBody(), true);
-
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 throw new RpcServerException($body['error']['message'], $body['error']['code']);
             }
-            $this->logger->info('this is a test call log');
+            $this->logger->info('MONITOR',compact("payload", "body"));
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
