@@ -22,7 +22,7 @@ class ClientServiceProvider extends ServiceProvider
 
         $config = config('rpc.client');
         $stream = new StreamHandler($this->app->storagePath()."/logs/rpc_monitor_".date("Ymd").".log");
-        $stream->setFormatter(LogstashFormatter::class);
+        $stream->setFormatter(new LogstashFormatter());
         $logger = new Logger('RPC.LOGGER');
         $logger->pushHandler($stream);
         $this->app->singleton('rpc', function () use ($config, $logger) {
