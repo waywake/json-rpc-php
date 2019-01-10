@@ -20,11 +20,7 @@ class ClientServiceProvider extends ServiceProvider
         $this->app->configure('rpc');
 
         $config = config('rpc.client');
-        $dateFormat = "Y n j, g:i a";
-        $output = "%datetime% > %level_name% > %message% %context% %extra%\n";
-        $formatter = new LineFormatter($output, $dateFormat);
         $stream = new StreamHandler($this->app->storagePath()."/logs/rpc_monitor_".date("Ymd").".log");
-        $stream->setFormatter($formatter);
         $logger = new Logger('RPC.LOGGER');
         $logger->pushHandler($stream);
         $this->app->singleton('rpc', function () use ($config, $logger) {
