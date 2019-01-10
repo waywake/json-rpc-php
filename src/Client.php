@@ -4,6 +4,7 @@ namespace JsonRpc;
 
 use GuzzleHttp\Exception\ServerException;
 use JsonRpc\Exception\RpcServerException;
+use Monolog\Logger;
 
 class Client
 {
@@ -15,7 +16,7 @@ class Client
      */
     protected $http;
 
-    public function __construct($config)
+    public function __construct($config, Logger $logger)
     {
         $default = [
             'app' => '***',
@@ -90,7 +91,6 @@ class Client
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 throw new RpcServerException($body['error']['message'], $body['error']['code']);
             }
-
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {

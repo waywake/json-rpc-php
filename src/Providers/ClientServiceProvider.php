@@ -4,6 +4,7 @@ namespace JsonRpc\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use JsonRpc\Client;
+use Monolog\Logger;
 
 class ClientServiceProvider extends ServiceProvider
 {
@@ -17,8 +18,10 @@ class ClientServiceProvider extends ServiceProvider
         $this->app->configure('rpc');
 
         $config = config('rpc.client');
-        $this->app->singleton('rpc', function () use ($config) {
-            return new Client($config);
+        $logger = new Logger('rpc-client-logger');
+        $logger->pushHandler($this->app->storagePath()."/logs/rpc_client_".date("Ymd").".log");
+        $this->app->singleton('rpc', function () use ($config, $logger) {
+            return new Client($config, $logger);
         });
 
         foreach ($config as $k => $item) {
