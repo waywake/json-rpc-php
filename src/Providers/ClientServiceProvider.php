@@ -19,10 +19,10 @@ class ClientServiceProvider extends ServiceProvider
         $this->app->configure('rpc');
 
         $config = config('rpc.client');
-        $logger = new Logger('rpc-client-logger');
-        $logger->pushHandler(new StreamHandler($this->app->storagePath()."/logs/rpc_client_".date("Ymd").".log"));
-        $this->app->singleton('rpc', function () use ($config, $logger) {
-            return new Client($config, $logger);
+//        $logger = new Logger('rpc-client-logger');
+//        $logger->pushHandler(new StreamHandler($this->app->storagePath()."/logs/rpc_client_".date("Ymd").".log"));
+        $this->app->singleton('rpc', function () use ($config) {
+            return new Client($config);
         });
 
         foreach ($config as $k => $item) {

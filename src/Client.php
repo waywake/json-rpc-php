@@ -4,7 +4,6 @@ namespace JsonRpc;
 
 use GuzzleHttp\Exception\ServerException;
 use JsonRpc\Exception\RpcServerException;
-use Monolog\Logger;
 
 class Client
 {
@@ -16,7 +15,7 @@ class Client
      */
     protected $http;
 
-    public function __construct($config, Logger $logger)
+    public function __construct($config)
     {
         $default = [
             'app' => '***',
