@@ -24,12 +24,14 @@ class Client
     {
         $default = [
             'app' => '***',
+            'log_path'=> "/logs/rpc_monitor_".date("Ymd").".log",
+            'log_formatter' => 'LogstashFormatter',
         ];
-        $stream = new StreamHandler(app()->storagePath()."/logs/rpc_monitor_".date("Ymd").".log");
-        $stream->setFormatter(new LogstashFormatter());
+        $this->config = array_merge($default, $config);
+        $stream = new StreamHandler(app()->storagePath().$this->config['log_path']);
+        $stream->setFormatter(new $this->config['log_formatter']());
         $logger = new Logger('RPC.LOGGER');
         $logger->pushHandler($stream);
-        $this->config = array_merge($default, $config);
         $this->id = 0;
         $this->logger = $logger;
     }
