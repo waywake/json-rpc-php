@@ -20,7 +20,7 @@ class Client
      */
     protected $http;
 
-    public function __construct($config, Logger $logger)
+    public function __construct($config)
     {
         $default = [
             'app' => '***',
