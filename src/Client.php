@@ -31,6 +31,10 @@ class Client
      */
     protected $http;
 
+    /**
+     * which server rpc call choose
+     * @var array
+     */
     protected $server_config;
 
     public function __construct($config)
@@ -56,7 +60,7 @@ class Client
      */
     public function endpoint($k)
     {
-        $this->server_config = $this->config[$k];
+        $this->server_config = $this->config['client'][$k];
 
         $default = [
             'app' => $k,
@@ -106,7 +110,6 @@ class Client
         try {
             $headers = [
                 'client_app' => $this->config['app'],
-                'server_app' => $this->server_config['app']
             ];
             $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
                 'headers' => $headers,

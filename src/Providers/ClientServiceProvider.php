@@ -18,13 +18,13 @@ class ClientServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->configure('rpc');
-        $config = config('rpc.client');
+        $config = config('rpc');
 
         $this->app->singleton('rpc', function () use ($config) {
             return new Client($config);
         });
 
-        foreach ($config as $k => $item) {
+        foreach ($config['client'] as $k => $item) {
             $this->app->singleton('rpc.' . $k, function () use ($k) {
                 return app('rpc')->endpoint($k);
             });
