@@ -46,6 +46,7 @@ class Client
         ];
         $this->config = array_merge($default, $config);
         $stream = new StreamHandler(app()->storagePath().$this->config['log_path']);
+        app('log')->info('test json-rpc config', $this->config);
         $stream->setFormatter(new $this->config['log_formatter']());
         $logger = new Logger('RPC.LOGGER');
         $logger->pushHandler($stream);
