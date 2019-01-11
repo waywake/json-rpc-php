@@ -9,7 +9,7 @@ use JsonRpc\Client;
 class ClientServiceProvider extends ServiceProvider
 {
 
-    protected $defer = true;
+    protected $defer = false;
 
     /**
      * Register any application services.
