@@ -4,7 +4,6 @@ namespace JsonRpc;
 
 use GuzzleHttp\Exception\ServerException;
 use JsonRpc\Exception\RpcServerException;
-use JsonRpc\Logging\LogstashFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -25,7 +24,7 @@ class Client
         $default = [
             'app' => '***',
             'log_path'=> "/logs/rpc_monitor_".date("Ymd").".log",
-            'log_formatter' => LogstashFormatter::class,
+            'log_formatter' => JsonRpc\Logging\LogstashFormatter::class,
         ];
         $this->config = array_merge($default, $config);
         $stream = new StreamHandler(app()->storagePath().$this->config['log_path']);
