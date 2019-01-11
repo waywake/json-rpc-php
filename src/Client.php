@@ -9,15 +9,29 @@ use Monolog\Logger;
 
 class Client
 {
+    /**
+     * all configuration information
+     * @var array
+     */
     protected $config;
 
+    /**
+     * request id
+     * @var string
+     */
     protected $id;
 
+    /**
+     * logger
+     * @var Logger
+     */
     protected $logger;
     /**
      * @var \GuzzleHttp\Client
      */
     protected $http;
+
+    protected $server_config;
 
     public function __construct($config)
     {
@@ -35,16 +49,22 @@ class Client
         $this->logger = $logger;
     }
 
+    /**
+     *
+     * @param $k
+     * @return $this
+     */
     public function endpoint($k)
     {
-        $config = $this->config[$k];
+        $this->server_config = $this->config[$k];
 
         $default = [
+            'app' => $k,
             'timeout' => 3,
             'allow_redirects' => false,
         ];
 
-        $this->http = new \GuzzleHttp\Client(array_merge($default, $config));
+        $this->http = new \GuzzleHttp\Client(array_merge($default, $this->server_config));
         return $this;
     }
 
@@ -84,10 +104,12 @@ class Client
     protected function post($payload)
     {
         try {
+            $headers = [
+                'client_app' => $this->config['app'],
+                'server_app' => $this->server_config['app']
+            ];
             $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
-                'headers' => [
-                    'hwmc_app' => $this->config['app'],
-                ],
+                'headers' => $headers,
                 'json' => $payload,
             ]);
         } catch (ServerException $e) {
@@ -99,7 +121,7 @@ class Client
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 throw new RpcServerException($body['error']['message'], $body['error']['code']);
             }
-            $this->logger->info('MONITOR',compact("payload", "body"));
+            $this->logger->info('MONITOR',compact("payload", "body", "headers"));
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
