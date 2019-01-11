@@ -31,8 +31,4 @@ class ClientServiceProvider extends ServiceProvider
         }
     }
 
-//    public function provides()
-//    {
-//        return ['rpc'];
-//    }
 }
