@@ -31,6 +31,7 @@ class Client
         $stream->setFormatter(new $this->config['log_formatter']());
         $logger = new Logger('RPC.LOGGER');
         $logger->pushHandler($stream);
+        $logger->info('call client rpc');
         $this->id = 0;
         $this->logger = $logger;
     }
