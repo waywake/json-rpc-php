@@ -5,6 +5,7 @@ namespace JsonRpc\Server;
 use Illuminate\Http\Request;
 use Illuminate\View\Factory;
 use JsonRpc\Exception\RpcServerException;
+use Monolog\Logger;
 
 /**
  * Class JsonRpcTool
@@ -40,7 +41,7 @@ class JsonRpcTool
             $method = $request->input('method');
 
             try {
-                $result = app('rpc.auth')->call($method, $params);
+                $result = app('rpc.'.$this->config['name'])->call($method, $params);
                 $view->share('result', json_encode($result, JSON_PRETTY_PRINT));
             } catch (RpcServerException $exception) {
                 $view->share('error', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
