@@ -9,7 +9,7 @@ use JsonRpc\Client;
 class ClientServiceProvider extends ServiceProvider
 {
 
-    protected $defer = true;
+//    protected $defer = true;
 
     /**
      * Register any application services.
@@ -19,7 +19,7 @@ class ClientServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->configure('rpc');
-
+        $this->app->log->info("call client service provider log");
         $config = config('rpc.client');
 
         $this->app->singleton('rpc', function () use ($config) {
