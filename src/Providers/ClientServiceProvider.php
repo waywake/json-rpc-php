@@ -9,7 +9,6 @@ use JsonRpc\Client;
 class ClientServiceProvider extends ServiceProvider
 {
 
-    protected $defer = false;
 
     /**
      * Register any application services.
@@ -32,8 +31,8 @@ class ClientServiceProvider extends ServiceProvider
         }
     }
 
-    public function provides()
-    {
-        return ['rpc'];
-    }
+//    public function provides()
+//    {
+//        return ['rpc'];
+//    }
 }
