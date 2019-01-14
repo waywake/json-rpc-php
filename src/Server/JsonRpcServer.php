@@ -85,6 +85,11 @@ class JsonRpcServer
         return isset($this->map[$method]) ? $this->map[$method] : ['', ''];
     }
 
+    /**
+     * thisis
+     * @param string $method 参数名称
+     * @return array 返回结果
+     */
     protected function parseMethod($method)
     {
         $method = explode('.', $method);
