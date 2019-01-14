@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2bc6549f9c92876a91cb2530fc974c23",
+    "content-hash": "c8f285c2463b3be4f6b2e70209334571",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -560,6 +560,48 @@
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
             "time": "2019-01-07T13:39:07+00:00"
+        },
+        {
+            "name": "itxq/api-doc-php",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/itxq/api-doc-php.git",
+                "reference": "79ac71cf09da49491cfb92722d6f6e13ad8f6482"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/itxq/api-doc-php/zipball/79ac71cf09da49491cfb92722d6f6e13ad8f6482",
+                "reference": "79ac71cf09da49491cfb92722d6f6e13ad8f6482",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "itxq\\apidoc\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "IT小强xqitw.cn",
+                    "email": "360237521@qq.com"
+                }
+            ],
+            "description": "api-doc-php",
+            "time": "2018-06-24T04:20:25+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1598,50 +1640,7 @@
             "time": "2019-01-03T09:07:35+00:00"
         }
     ],
-    "packages-dev": [
-        {
-            "name": "itxq/api-doc-php",
-            "version": "v1.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/itxq/api-doc-php.git",
-                "reference": "79ac71cf09da49491cfb92722d6f6e13ad8f6482"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/itxq/api-doc-php/zipball/79ac71cf09da49491cfb92722d6f6e13ad8f6482",
-                "reference": "79ac71cf09da49491cfb92722d6f6e13ad8f6482",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "php": ">=5.6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "itxq\\apidoc\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "IT小强xqitw.cn",
-                    "email": "360237521@qq.com"
-                }
-            ],
-            "description": "api-doc-php",
-            "time": "2018-06-24T04:20:25+00:00"
-        }
-    ],
+    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
