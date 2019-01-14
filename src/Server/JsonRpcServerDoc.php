@@ -29,17 +29,16 @@ class JsonRpcDoc
 
     public function render()
     {
-//        /**
-//         * @var $view Factory
-//         */
-//       $config = [
-//           'class' => $this->methods(),
-//           'filter_method' => [],
-//       ];
-//       $api = new BootstrapApiDoc($config);
-//       $doc = $api->getHtml();
-//       exit($doc);
-        return view()->file(__DIR__."/../Sami/document/index.html");
+        /**
+         * @var $view Factory
+         */
+       $config = [
+           'class' => $this->methods(),
+           'filter_method' => [],
+       ];
+       $api = new BootstrapApiDoc($config);
+       $doc = $api->getHtml();
+       exit($doc);
     }
 
     protected function desc($class, $method)
