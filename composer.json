@@ -12,5 +12,8 @@
         "psr-4": {
             "JsonRpc\\": "src/"
         }
+    },
+    "require-dev": {
+        "itxq/api-doc-php": "^1.1"
     }
 }

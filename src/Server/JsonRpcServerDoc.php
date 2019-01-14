@@ -2,6 +2,8 @@
 
 namespace JsonRpc\Server;
 
+use itxq\apidoc\BootstrapApiDoc;
+
 class JsonRpcDoc
 {
 
@@ -18,10 +20,9 @@ class JsonRpcDoc
     {
         $methods = [];
         foreach ($this->map as $key => $item) {
-            $methods[] = [
-                'method' => $key,
-                'desc' => $this->desc($item[0], $item[1]),
-            ];
+            if (!in_array($item[0], $methods)) {
+                $methods[] = $item[0];
+            }
         }
         return $methods;
     }
@@ -32,16 +33,13 @@ class JsonRpcDoc
         /**
          * @var $view Factory
          */
-        $view = view();
-
-        dump($this->methods());
-        exit;
-
-        $view->share('methods', $this->methods());
-
-        return $view->exists('doc') ?
-            $view->make('doc') :
-            $view->file(__DIR__ . '/../views/doc.blade.php');
+       $config = [
+           'class' => $this->methods(),
+           'filter_method' => [],
+       ];
+       $api = new BootstrapApiDoc($config);
+       $doc = $api->getHtml();
+       exit($doc);
     }
 
     protected function desc($class, $method)
