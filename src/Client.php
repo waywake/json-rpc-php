@@ -139,7 +139,8 @@ class Client
      */
     protected function id()
     {
-        return  $this->id.'-'.time();
+//        return  $this->id.'-'.time();
+        return  $this->id;
     }
 
 }

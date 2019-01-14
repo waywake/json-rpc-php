@@ -35,10 +35,10 @@ class JsonRpcTool
         $view = view();
 
         $params = json_decode($request->input('params'), true);
-
+        $method = $request->input('method');
         if ($request->method() == Request::METHOD_POST) {
 
-            $method = $request->input('method');
+
 
             try {
                 $result = app('rpc.'.$this->config['name'])->call($method, $params);
@@ -47,7 +47,7 @@ class JsonRpcTool
                 $view->share('error', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
             }
         }
-
+        $view->share('method',$method);
         $view->share('endpoint', $this->getEndpoint());
         $view->share('methods', $this->getMethods());
         $view->share('params', json_encode($params));

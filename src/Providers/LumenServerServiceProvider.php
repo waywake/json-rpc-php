@@ -4,6 +4,7 @@ namespace JsonRpc\Providers;
 
 use App\Http\Middleware\JsonRpc;
 use Illuminate\Support\ServiceProvider;
+use JsonRpc\Middleware\Security;
 use JsonRpc\Server\JsonRpcDoc;
 use JsonRpc\Server\JsonRpcServer;
 use JsonRpc\Server\JsonRpcTool;
@@ -24,9 +25,10 @@ class LumenServerServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        $this->app->routeMiddleware(['rpc.security' => Security::class]);
         $this->app->router->group([
-            'prefix' => 'rpc'
-//            'middleware' => 'rpc',
+            'prefix' => 'rpc',
+            'middleware' => 'rpc.security',
         ], function () {
 
             $this->app->configure('rpc');

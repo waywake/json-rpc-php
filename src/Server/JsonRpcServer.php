@@ -50,7 +50,7 @@ class JsonRpcServer
             } else {
                 list($method, $params, $id) = $this->parseJson($this->request->getContent());
             }
-            
+            app('log')->info('rpc ser', [$method, $params, $id, $this->request->header('client_app')]);
             list($class, $function) = $this->parseMethodWithMap($method);
 //            dump($class,$function);exit;
 

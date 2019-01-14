@@ -60,7 +60,7 @@
                         <label for="inputAddress">Method</label>
                         <select class="form-control" id="method" name="method">
                             @foreach($methods as $k => $v)
-                                <option>{{$k}}</option>
+                                <option @if($method == $k) selected @endif>{{$k}}</option>
                             @endforeach
                         </select>
                     </div>
