@@ -67,6 +67,8 @@ return [
     'user.relatison' => [\App\Rpc\User\RpcUser::class, 'getUserId'],
     'order.info' => [\App\Rpc\Order\RpcOrder::class, 'getOrderInfo'],
 ];
+
+发布的rpc方法必须在此文件注册，否则无法访问
 ```
 
 ####rpc server文件
@@ -120,7 +122,10 @@ class RpcUser extends JsonRpcMethod
 }
 
 ```
-
+####rpc client 调用
+```php
+$result = app('rpc.sapi')->call('user.info',[13232]);
+```
 ####工具
 ```
 http://host/rpc/tool.html 调用工具
