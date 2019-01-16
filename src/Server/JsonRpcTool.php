@@ -16,6 +16,7 @@ class JsonRpcTool
 {
 
     protected $config;
+    protected $classes;
 
     public function __construct($config)
     {
@@ -47,11 +48,15 @@ class JsonRpcTool
                 $view->share('error', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
             }
         }
+        $methods = $this->getMethods();
         $view->share('method',$method);
         $view->share('endpoint', $this->getEndpoint());
-        $view->share('methods', $this->getMethods());
+        $view->share('methods', $methods);
         $view->share('params', json_encode($params));
 
+        foreach ($methods as $name => $class) {
+            $desc[$name] = $this->desc($class[0], $class[1]);
+        }
         return $view->exists('tool') ?
             $view->make('tool') :
             $view->file(__DIR__ . '/../views/tool.blade.php');
@@ -72,4 +77,15 @@ class JsonRpcTool
         return include_once $this->config['map'];
     }
 
+    protected function desc($class, $method)
+    {
+        if (!isset($this->classes[$class])) {
+            $reflector = new \ReflectionClass($class);
+            $this->classes[$class] = $reflector;
+        } else {
+            $reflector = $this->classes[$class];
+        }
+
+        return str_replace("/**\n",'',$reflector->getMethod($method)->getDocComment());
+    }
 }
