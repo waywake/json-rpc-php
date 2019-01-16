@@ -71,6 +71,36 @@ return [
 发布的rpc方法必须在此文件注册，否则无法访问
 ```
 
+####lumen配置config/rpc.php
+```php
+<?php
+return [
+    'app' => env('APP_NAME'),
+    'log_path' => "/logs/rpc-".date("Y-m-d").".log",//rpc日志路径
+    'log_formatter' => \App\Logging\LogstashFormatter::class, //rpc日志格式
+    // json rpc server 配置
+    'server' => [
+        'name' => env('APP_NAME'),
+        'map' => base_path('app/Rpc/method.php'), //rpc注册文件
+    ],
+    // json rpc client 配置
+    'client' => [
+        'auth' => [
+            'local' => false,
+            'base_uri' => 'http://hw.api.test',
+        ],
+        'erp' => [
+            'local' => false,
+            'base_uri' => 'http://hw.api.test',
+        ],
+        'sapi' => [
+            'local' => true,//当前项目标记为true 
+            'base_uri' => 'http://hw.api.test',
+        ],
+    ],
+];
+
+```
 ####rpc server文件
 ```php
 <?php
@@ -126,7 +156,7 @@ class RpcUser extends JsonRpcMethod
 ```php
 $result = app('rpc.sapi')->call('user.info',[13232]);
 ```
-####工具
+###工具
 ```
 http://host/rpc/tool.html 调用工具
 http://host/rpc/doc.html 文档地址

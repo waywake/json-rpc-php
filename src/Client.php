@@ -109,6 +109,7 @@ class Client
     protected function post($payload)
     {
         try {
+
             $headers = [
                 'client_app' => $this->config['app'],
             ];

@@ -26,7 +26,6 @@ class Security
      */
     public function handle($request, Closure $next)
     {
-        app('log')->info("rpc security middleware call here");
         $ip = $request->getClientIp();
         if ($this->isClientIPPermitted($ip) == false) {
             return new JsonResponse("$ip is forbidden", 403);
