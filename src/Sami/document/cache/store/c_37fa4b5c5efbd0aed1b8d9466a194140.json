@@ -1,0 +1,103 @@
+{
+    "name": "App\\Rpc\\Order\\RpcOrder",
+    "line": 17,
+    "short_desc": "",
+    "long_desc": "",
+    "hint": null,
+    "tags": {
+        "title": [
+            [
+                "\u8ba2\u5355rpc\nClass",
+                "RpcOrder"
+            ]
+        ],
+        "package": [
+            [
+                "App\\Rpc\\Order"
+            ]
+        ]
+    },
+    "namespace": "App\\Rpc\\Order",
+    "file": "\/Users\/dongwei\/Server\/files\/user_center\/api\/vendor\/paidian\/json-rpc\/src\/Sami\/..\/..\/..\/..\/..\/app\/Rpc\/Order\/RpcOrder.php",
+    "relative_file": null,
+    "hash": "8b471e0b7e5b6770c1e59b3817eef0d51a9b02d6",
+    "parent": "JsonRpc\\Server\\JsonRpcMethod",
+    "modifiers": 0,
+    "is_trait": false,
+    "is_interface": false,
+    "aliases": {
+        "JsonRpcMethod": "JsonRpc\\Server\\JsonRpcMethod"
+    },
+    "errors": [],
+    "interfaces": [],
+    "traits": [],
+    "properties": [],
+    "methods": {
+        "getOrderInfo": {
+            "name": "getOrderInfo",
+            "line": 27,
+            "short_desc": "",
+            "long_desc": "",
+            "hint": [
+                [
+                    "App\\Rpc\\Order\\RpcOrder",
+                    false
+                ]
+            ],
+            "hint_desc": "",
+            "tags": {
+                "title": [
+                    [
+                        "\u83b7\u53d6\u8ba2\u5355\u4fe1\u606f"
+                    ]
+                ],
+                "url": [
+                    [
+                        "order.info"
+                    ]
+                ],
+                "method": [
+                    [
+                        "post"
+                    ]
+                ]
+            },
+            "modifiers": 1,
+            "is_by_ref": "",
+            "exceptions": [],
+            "errors": [],
+            "parameters": {
+                "order_id": {
+                    "name": "order_id",
+                    "line": 27,
+                    "short_desc": "\u8ba2\u5355id \u7a7a \u5fc5\u987b",
+                    "long_desc": null,
+                    "hint": [
+                        [
+                            "int",
+                            false
+                        ]
+                    ],
+                    "tags": [],
+                    "modifiers": null,
+                    "default": null,
+                    "variadic": false,
+                    "is_by_ref": false
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "line": 27,
+                    "short_desc": "",
+                    "long_desc": null,
+                    "hint": [],
+                    "tags": [],
+                    "modifiers": null,
+                    "default": null,
+                    "variadic": false,
+                    "is_by_ref": false
+                }
+            }
+        }
+    },
+    "constants": []
+}

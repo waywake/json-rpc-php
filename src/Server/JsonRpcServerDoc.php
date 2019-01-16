@@ -39,6 +39,9 @@ class JsonRpcDoc
        $api = new BootstrapApiDoc($config);
        $doc = $api->getHtml();
        exit($doc);
+//        \View::addExtension('html','php');
+//        app('view')->addExtension('html', 'php');
+//        echo app('view')->file(__DIR__."/../Sami/document/index.html");
     }
 
     protected function desc($class, $method)
