@@ -8,7 +8,7 @@
 执行 
 ```bash
 composer config repositories.php-json-rpc vcs git@git.int.haowumc.com:composer/php-json-rpc.git
-composer require paidian/json-rpc
+composer require paidian/json-rpc:dev-master
 ```
 
 
