@@ -13,6 +13,7 @@ class JsonRpcServer
     const Rpc_Error_NOT_FOUND = -32601;
     const Rpc_Error_Invalid_Params = -32602;
     const Rpc_Error_Internal_Error = -32603;
+    const Rpc_Success = 0;
 
 
     const ErrorMsg = [
@@ -20,6 +21,7 @@ class JsonRpcServer
         self::Rpc_Error_Parse_Error => 'Json parse error',
         self::Rpc_Error_Invalid_Request => 'Invalid request',
         self::Rpc_Error_Invalid_Params => 'Invalid params',
+        self::Rpc_Success => 'Success'
     ];
 
     /**
@@ -37,9 +39,9 @@ class JsonRpcServer
 
     public function handler()
     {
-//        if ($this->request->getContentType() != 'json') {
-//            return $this->error(self::Rpc_Error_Invalid_Request);
-//        }
+        if ($this->request->getContentType() != 'json') {
+            return $this->error(self::Rpc_Error_Invalid_Request);
+        }
 
         try {
 
@@ -50,9 +52,8 @@ class JsonRpcServer
             } else {
                 list($method, $params, $id) = $this->parseJson($this->request->getContent());
             }
-            app('log')->info('rpc ser', [$method, $params, $id, $this->request->header('client_app')]);
+
             list($class, $function) = $this->parseMethodWithMap($method);
-//            dump($class,$function);exit;
 
             if (!class_exists($class) || !method_exists($class, $function)) {
                 return $this->error(self::Rpc_Error_NOT_FOUND);
@@ -62,7 +63,7 @@ class JsonRpcServer
                 return $this->error(self::Rpc_Error_Invalid_Params);
             }
 
-
+            app('log')->info('rpc ser', [$method, $params, $id, $class, $this->request->header('client_app')]);
             $ret = call_user_func_array([(new $class($id, $this->request)), $function], $params);
             return $ret;
 
@@ -139,6 +140,4 @@ class JsonRpcServer
             'id' => $id
         ]);
     }
-
-
 }

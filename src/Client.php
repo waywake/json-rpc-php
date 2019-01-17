@@ -41,16 +41,15 @@ class Client
     {
         $default = [
             'app' => '***',
-            'log_path'=> "/logs/rpc_monitor_".date("Ymd").".log",
+            'log_path' => "/logs/rpc_monitor_" . date("Ymd") . ".log",
             'log_formatter' => \JsonRpc\Logging\LogstashFormatter::class,
         ];
         $this->config = array_merge($default, $config);
-        $stream = new StreamHandler(app()->storagePath().$this->config['log_path']);
-        app('log')->info('test json-rpc config', $this->config);
+        $stream = new StreamHandler(app()->storagePath() . $this->config['log_path']);
         $stream->setFormatter(new $this->config['log_formatter']());
         $logger = new Logger('RPC.LOGGER');
         $logger->pushHandler($stream);
-        $this->id = app('request')->header('X-Request-Id')?:"no-x-request-id";
+        $this->id = app('request')->header('X-Request-Id') ?: "no-x-request-id";
         $this->logger = $logger;
     }
 
@@ -112,6 +111,8 @@ class Client
 
             $headers = [
                 'client_app' => $this->config['app'],
+                'client_host' => gethostname(),
+                'client_addr' => $_SERVER['SERVER_ADDR'],
             ];
             $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
                 'headers' => $headers,
@@ -126,7 +127,6 @@ class Client
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 throw new RpcServerException($body['error']['message'], $body['error']['code']);
             }
-            $this->logger->info('MONITOR',compact("payload", "body", "headers"));
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
@@ -141,7 +141,7 @@ class Client
     protected function id()
     {
 //        return  $this->id.'-'.time();
-        return  $this->id;
+        return $this->id;
     }
 
 }
