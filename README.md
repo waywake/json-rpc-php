@@ -1,4 +1,9 @@
 # Paidian PHP RPC
+###框架基本信息
+
+- 通信协议: HTTP
+- 通信框架: GuzzleHttp
+- 消息协议: JSON
 
 
 > 该项目使用 composer 来完成加载

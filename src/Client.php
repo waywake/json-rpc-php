@@ -124,6 +124,7 @@ class Client
 
         try {
             $body = \GuzzleHttp\json_decode($resp->getBody(), true);
+            app('log')->info('client call return body', $body);
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 $message = is_array($body['error']['message']) ? json_encode($body['error']['message']) : $body['error']['message'];
                 throw new RpcServerException($message, $body['error']['code']);
