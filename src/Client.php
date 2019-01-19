@@ -34,12 +34,7 @@ class Client
 
     public function __construct($config)
     {
-        $default = [
-            'app' => '***',
-            'log_path' => "/logs/rpc_monitor_" . date("Ymd") . ".log",
-            'log_formatter' => \JsonRpc\Logging\LogstashFormatter::class,
-        ];
-        $this->config = array_merge($default, $config);
+        $this->config = $config;
         $this->id = app('request')->header('X-Request-Id') ?: "no-x-request-id";
     }
 
@@ -104,6 +99,7 @@ class Client
                 'client_host' => gethostname(),
                 'client_addr' => $_SERVER['SERVER_ADDR'],
             ];
+            app('rpc.logger')->info("client_request",array_merge($this->server_config, $payload));
             $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
                 'headers' => $headers,
                 'json' => $payload,
@@ -114,14 +110,15 @@ class Client
 
         try {
             $body = \GuzzleHttp\json_decode($resp->getBody(), true);
+            app('rpc.logger')->info("client_response",$body);
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 $message = is_array($body['error']['message']) ? json_encode($body['error']['message']) : $body['error']['message'];
                 throw new RpcServerException($message, $body['error']['code']);
             }
-            app('rpc.logger')->info('rpc call log new return');
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
+            app('rpc.logger')->error('client_decode_error',array_merge($this->server_config, $payload));
             throw new RpcServerException('json decode error', -32700);
         }
     }
