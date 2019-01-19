@@ -4,6 +4,7 @@ namespace JsonRpc\Providers;
 
 use App\Http\Middleware\JsonRpc;
 use Illuminate\Support\ServiceProvider;
+use JsonRpc\Exception\RpcServerException;
 use JsonRpc\Middleware\Security;
 use JsonRpc\Server\JsonRpcDoc;
 use JsonRpc\Server\JsonRpcServer;
@@ -33,7 +34,9 @@ class LumenServerServiceProvider extends ServiceProvider
 
             $this->app->configure('rpc');
             $config = config('rpc.server');
-
+            if (!is_array($config)) {
+                throw new RpcServerException("Application's Rpc Server Config Undefind", 500);
+            }
             $callback = function () use ($config) {
                 $server = new JsonRpcServer($config);
                 return $server->handler();

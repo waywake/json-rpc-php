@@ -12,16 +12,14 @@ class ClientServiceProvider extends ServiceProvider
 
 
     /**
-     * Register any application services.
-     *
-     * @return void
+     * @throws RpcServerException
      */
     public function register()
     {
         $this->app->configure('rpc');
         $config = config('rpc');
         if (!is_array($config)) {
-            throw new RpcServerException("Application's Rpc Config Undefind", 500);
+            throw new RpcServerException("Application's Rpc Client Config Undefind", 500);
         }
         $this->app->singleton('rpc', function () use ($config) {
             return new Client($config);
