@@ -22,11 +22,6 @@ class Client
     protected $id;
 
     /**
-     * logger
-     * @var Logger
-     */
-    protected $logger;
-    /**
      * @var \GuzzleHttp\Client
      */
     protected $http;
@@ -45,12 +40,7 @@ class Client
             'log_formatter' => \JsonRpc\Logging\LogstashFormatter::class,
         ];
         $this->config = array_merge($default, $config);
-        $stream = new StreamHandler(app()->storagePath() . $this->config['log_path']);
-        $stream->setFormatter(new $this->config['log_formatter']());
-        $logger = new Logger('RPC.LOGGER');
-        $logger->pushHandler($stream);
         $this->id = app('request')->header('X-Request-Id') ?: "no-x-request-id";
-        $this->logger = $logger;
     }
 
     /**
@@ -124,11 +114,11 @@ class Client
 
         try {
             $body = \GuzzleHttp\json_decode($resp->getBody(), true);
-            app('log')->info('client call return body', $body);
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 $message = is_array($body['error']['message']) ? json_encode($body['error']['message']) : $body['error']['message'];
                 throw new RpcServerException($message, $body['error']['code']);
             }
+            app('rpc.logger')->info('rpc call log new return');
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
