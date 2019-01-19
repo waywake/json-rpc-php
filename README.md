@@ -166,3 +166,11 @@ $result = app('rpc.sapi')->call('user.info',[13232]);
 http://host/rpc/tool.html 调用工具
 http://host/rpc/doc.html 文档地址
 ```
+
+
+###更新日志
+2019-01-19: 日志封装
+
+```php
+$app->register(\JsonRpc\Providers\LoggerServiceProvider::class); // rpc logger
+```
