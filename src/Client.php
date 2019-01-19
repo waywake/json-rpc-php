@@ -95,9 +95,7 @@ class Client
         try {
 
             $headers = [
-                'client_app' => $this->config['app'],
-                'client_host' => gethostname(),
-                'client_addr' => $_SERVER['SERVER_ADDR'],
+                'x-client-app' => $this->config['app'],
             ];
             app('rpc.logger')->info("client_request",array_merge($this->server_config, $payload));
             $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
