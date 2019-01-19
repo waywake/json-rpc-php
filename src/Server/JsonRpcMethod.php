@@ -17,29 +17,23 @@ class JsonRpcMethod
 
     public function response($result)
     {
-        return JsonResponse::create([
+        return [
             'jsonrpc' => '2.0',
             'result' => $result,
             'id' => $this->id
-        ]);
+        ];
     }
 
-    /**
-     *
-     * @param $code
-     * @param $msg
-     * @return static
-     */
     public function error($code, $msg)
     {
-        return JsonResponse::create([
+        return [
             'jsonrpc' => '2.0',
             'error' => [
                 'code' => $code,
                 'message' => is_array($msg) ? json_encode($msg) : $msg,
             ],
             'id' => $this->id
-        ]);
+        ];
     }
 
 }
