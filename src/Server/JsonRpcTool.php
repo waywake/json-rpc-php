@@ -74,7 +74,7 @@ class JsonRpcTool
 
     public function getMethods()
     {
-        return include_once $this->config['map'];
+        return app('rpc.server.map');
     }
 
     protected function desc($class, $method)

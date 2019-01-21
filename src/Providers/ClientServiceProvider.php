@@ -5,6 +5,7 @@ namespace JsonRpc\Providers;
 use Illuminate\Support\ServiceProvider;
 use JsonRpc\Client;
 use JsonRpc\Exception\RpcServerException;
+use JsonRpc\Server\JsonRpcServer;
 
 
 class ClientServiceProvider extends ServiceProvider

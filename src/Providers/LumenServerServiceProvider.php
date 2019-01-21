@@ -71,5 +71,10 @@ class LumenServerServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->configure('rpc');
+        $config = config('rpc.server');
+        $this->app->singleton('rpc.server.map', function() use($config){
+            return include_once $config['map'];
+        });
     }
 }
