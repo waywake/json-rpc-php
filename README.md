@@ -82,7 +82,6 @@ return [
 return [
     'app' => env('APP_NAME'),
     'log_path' => "/logs/rpc-".date("Y-m-d").".log",//rpc日志路径
-    'log_formatter' => \App\Logging\LogstashFormatter::class, //rpc日志格式
     // json rpc server 配置
     'server' => [
         'name' => env('APP_NAME'),

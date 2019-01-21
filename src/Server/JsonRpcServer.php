@@ -61,8 +61,7 @@ class JsonRpcServer
             if (!$this->isEnoughParameter($class, $function, $params)) {
                 return $this->error(self::Rpc_Error_Invalid_Params);
             }
-
-            app('rpc.logger')->info('server', [$id, $class,$method, $params, $this->request->header('x-client-app')]);
+            app('rpc.logger')->info('server', [$id, $class,$method, $params]);
             $ret = call_user_func_array([(new $class($id, $this->request)), $function], $params);
             app('rpc.logger')->info('server_result', [$id, $ret]);
 

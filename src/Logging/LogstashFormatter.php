@@ -24,12 +24,12 @@ class LogstashFormatter extends NormalizerFormatter
     public function format(array $record)
     {
         $record = parent::format($record);
-
         $message = array(
             '@timestamp' => $record['datetime'],
             'host' => $this->hostname,
             'app' => env('APP_NAME'),
             'env' => app()->environment(),
+            'client_app' => app('request')->header('X-Client-App'),
         );
 
         $request_id = app('request')->header('X-Request-Id');
@@ -41,6 +41,9 @@ class LogstashFormatter extends NormalizerFormatter
         //     $message['channel'] = $record['channel'];
         // }
 
+        if (isset($record['x-client-app'])) {
+            $message['client_app'] = $record['x_client_app'];
+        }
         if (isset($record['level_name'])) {
             $message['level'] = $record['level_name'];
         }
