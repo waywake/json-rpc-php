@@ -12,6 +12,15 @@ class JsonRpcServer extends JsonRpcBase
      * @var Request
      */
     public $request;
+    /**
+     * @var config 配置
+     */
+    protected $config;
+
+    /**
+     * @var rpc.server.map rpc方法
+     */
+    protected $map;
 
     public function __construct($config)
     {
