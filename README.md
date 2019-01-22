@@ -166,6 +166,8 @@ http://host/rpc/tool.html 调用工具
 http://host/rpc/doc.html 文档地址
 ```
 
+###错误码
+严格使用系统定义错误码 详见json-rpc/src/Server/JsonRpcBase.php
 
 ###更新日志
 2019-01-19: 日志封装
