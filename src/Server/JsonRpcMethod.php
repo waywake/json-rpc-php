@@ -3,8 +3,9 @@
 namespace JsonRpc\Server;
 
 use Illuminate\Http\JsonResponse;
+use JsonRpc\Exception\RpcServerException;
 
-class JsonRpcMethod
+class JsonRpcMethod extends JsonRpcBase
 {
     protected $id;
     protected $request;
@@ -24,8 +25,14 @@ class JsonRpcMethod
         ];
     }
 
+    /**
+     * @param $code
+     * @param $msg
+     * @return array
+     */
     public function error($code, $msg)
     {
+
         return [
             'jsonrpc' => '2.0',
             'error' => [

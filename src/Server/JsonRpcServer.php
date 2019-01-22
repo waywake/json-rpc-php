@@ -6,24 +6,8 @@ namespace JsonRpc\Server;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class JsonRpcServer
+class JsonRpcServer extends JsonRpcBase
 {
-    const Rpc_Error_Parse_Error = -32700;
-    const Rpc_Error_Invalid_Request = -32600;
-    const Rpc_Error_NOT_FOUND = -32601;
-    const Rpc_Error_Invalid_Params = -32602;
-    const Rpc_Error_Internal_Error = -32603;
-    const Rpc_Success = 0;
-
-
-    const ErrorMsg = [
-        self::Rpc_Error_NOT_FOUND => 'Method not found',
-        self::Rpc_Error_Parse_Error => 'Json parse error',
-        self::Rpc_Error_Invalid_Request => 'Invalid request',
-        self::Rpc_Error_Invalid_Params => 'Invalid params',
-        self::Rpc_Success => 'Success'
-    ];
-
     /**
      * @var Request
      */
