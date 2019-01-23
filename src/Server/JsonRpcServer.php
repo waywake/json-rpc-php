@@ -26,7 +26,7 @@ class JsonRpcServer extends JsonRpcBase
     {
         $this->config = $config;
         $this->request = function_exists('app') ? app('request') : Request::capture();
-        $this->map = app('rpc.server.map');
+        $this->map = $config['map'];
     }
 
     public function handler()

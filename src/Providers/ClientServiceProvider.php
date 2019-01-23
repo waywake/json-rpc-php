@@ -8,7 +8,7 @@ use JsonRpc\Exception\RpcServerException;
 use JsonRpc\Server\JsonRpcServer;
 
 
-class ClientServiceProvider extends ServiceProvider
+class ClientServiceProvider extends LoggerServiceProvider
 {
 
 
@@ -17,6 +17,7 @@ class ClientServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        parent::register();
         $this->app->configure('rpc');
         $config = config('rpc');
         if (!is_array($config)) {

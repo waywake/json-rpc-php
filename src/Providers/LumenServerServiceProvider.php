@@ -2,8 +2,6 @@
 
 namespace JsonRpc\Providers;
 
-use App\Http\Middleware\JsonRpc;
-use Illuminate\Support\ServiceProvider;
 use JsonRpc\Exception\RpcServerException;
 use JsonRpc\Middleware\Security;
 use JsonRpc\Server\JsonRpcDoc;
@@ -11,7 +9,7 @@ use JsonRpc\Server\JsonRpcServer;
 use JsonRpc\Server\JsonRpcTool;
 use Laravel\Lumen\Application;
 
-class LumenServerServiceProvider extends ServiceProvider
+class LumenServerServiceProvider extends LoggerServiceProvider
 {
 
     /**
@@ -34,6 +32,8 @@ class LumenServerServiceProvider extends ServiceProvider
 
             $this->app->configure('rpc');
             $config = config('rpc.server');
+            $map = require_once $config['map'];
+            $config['map'] = $map;
             if (!is_array($config)) {
                 throw new RpcServerException("Application's Rpc Server Config Undefind", 500);
             }
@@ -71,10 +71,6 @@ class LumenServerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->configure('rpc');
-        $config = config('rpc.server');
-        $this->app->singleton('rpc.server.map', function() use($config){
-            return include_once $config['map'];
-        });
+        parent::register();
     }
 }
