@@ -5,10 +5,10 @@ return [
      */
     'app' => env('APP_NAME'),
 
-    /**
-     * log 存储路径
-     */
-    'log_path' => storage_path('logs/rpc.log'),//rpc日志路径
+    //rpc日志路径
+    'log_path' => storage_path('logs/rpc.log'),
+    //rpc日志格式
+    'log_formatter' => JsonRpc\Logging\LogstashFormatter::class,
 
     /**
      * json rpc server 配置
