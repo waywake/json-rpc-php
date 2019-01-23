@@ -170,8 +170,3 @@ http://host/rpc/doc.html 文档地址
 严格使用系统定义错误码 详见json-rpc/src/Server/JsonRpcBase.php
 
 ###更新日志
-2019-01-19: 日志封装
-
-```php
-$app->register(\JsonRpc\Providers\LoggerServiceProvider::class); // rpc logger
-```
