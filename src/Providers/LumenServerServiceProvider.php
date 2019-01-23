@@ -10,7 +10,7 @@ use JsonRpc\Server\JsonRpcServer;
 use JsonRpc\Server\JsonRpcTool;
 use Laravel\Lumen\Application;
 
-class LumenServerServiceProvider extends LoggerServiceProvider
+class LumenServerServiceProvider extends BaseServiceProvider
 {
 
     /**
@@ -31,8 +31,6 @@ class LumenServerServiceProvider extends LoggerServiceProvider
             'prefix' => 'rpc',
             'middleware' => 'rpc.security',
         ], function () {
-
-            $this->app->configure('rpc');
             $config = config('rpc.server');
             $map = require_once $config['map'];
             $config['map'] = $map;

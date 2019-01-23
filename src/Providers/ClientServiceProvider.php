@@ -8,10 +8,8 @@ use JsonRpc\Exception\RpcServerException;
 use JsonRpc\Server\JsonRpcServer;
 
 
-class ClientServiceProvider extends LoggerServiceProvider
+class ClientServiceProvider extends BaseServiceProvider
 {
-
-
     /**
      * @throws RpcServerException
      */
