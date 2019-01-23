@@ -13,7 +13,7 @@ class JsonRpcDoc
 
     public function __construct($config)
     {
-        $this->map = include $config['map'];
+        $this->map = $config['map'];
     }
 
     public function methods()

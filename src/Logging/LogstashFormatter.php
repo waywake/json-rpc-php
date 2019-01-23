@@ -40,10 +40,6 @@ class LogstashFormatter extends NormalizerFormatter
         // if (isset($record['channel'])) {
         //     $message['channel'] = $record['channel'];
         // }
-
-        if (isset($record['x-client-app'])) {
-            $message['client_app'] = $record['x_client_app'];
-        }
         if (isset($record['level_name'])) {
             $message['level'] = $record['level_name'];
         }

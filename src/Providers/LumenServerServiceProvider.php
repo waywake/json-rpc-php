@@ -4,6 +4,7 @@ namespace JsonRpc\Providers;
 
 use JsonRpc\Exception\RpcServerException;
 use JsonRpc\Middleware\Security;
+use JsonRpc\Middleware\TunnelMiddleware;
 use JsonRpc\Server\JsonRpcDoc;
 use JsonRpc\Server\JsonRpcServer;
 use JsonRpc\Server\JsonRpcTool;
@@ -24,6 +25,7 @@ class LumenServerServiceProvider extends LoggerServiceProvider
 
     public function boot()
     {
+        $this->app->middleware(TunnelMiddleware::class);
         $this->app->routeMiddleware(['rpc.security' => Security::class]);
         $this->app->router->group([
             'prefix' => 'rpc',
