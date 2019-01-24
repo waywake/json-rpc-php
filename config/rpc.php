@@ -41,5 +41,9 @@ return [
             'local' => true,
             'base_uri' => env('RPC_OP_URI','http://op.dev.haowumc.com'),
         ],
+        'payment' => [
+            'local' => true,
+            'base_uri' => env('RPC_PAYMENT_URI','http://payapi.dev.haowumc.com'),
+        ],
     ],
 ];
