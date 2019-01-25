@@ -35,7 +35,7 @@ return [
         ],
         'api' => [
             'local' => true,
-            'base_uri' => env('RPC_API_URI','http://api.dev.haowumc.com'),
+            'base_uri' => env('RPC_API_URI','http://sapi.dev.haowumc.com'),
         ],
         'op' => [
             'local' => true,

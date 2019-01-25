@@ -25,11 +25,6 @@ class JsonRpcMethod extends JsonRpcBase
         ];
     }
 
-    /**
-     * @param $code
-     * @param $msg
-     * @return array
-     */
     public function error($code, $msg)
     {
 
