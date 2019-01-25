@@ -23,17 +23,17 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">
+                        <a class="nav-link active" href="/rpc/doc.html">
                             <span data-feather="home"></span>
-                            History <span class="sr-only">(current)</span>
+                            文档 <span class="sr-only">(current)</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <span data-feather="file"></span>
-                            abc
-                        </a>
-                    </li>
+                    {{--<li class="nav-item">--}}
+                        {{--<a class="nav-link" href="#">--}}
+                            {{--<span data-feather="file"></span>--}}
+                            {{--abc--}}
+                        {{--</a>--}}
+                    {{--</li>--}}
                 </ul>
             </div>
         </nav>
