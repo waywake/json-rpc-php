@@ -31,9 +31,9 @@ class JsonRpcServer extends JsonRpcBase
 
     public function handler()
     {
-        if ($this->request->getContentType() != 'json') {
-            return $this->error(self::Rpc_Error_Invalid_Request);
-        }
+//        if ($this->request->getContentType() != 'json') {
+//            return $this->error(self::Rpc_Error_Invalid_Request);
+//        }
 
         try {
 

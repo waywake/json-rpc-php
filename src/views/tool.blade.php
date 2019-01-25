@@ -68,9 +68,9 @@
                 <div class="form-row">
 
                     <div class="form-group col-md-12">
-                        <label for="inputAddress">Params</label>
-                        <input type="text" class="form-control" name="params" id="params" placeholder="逗号分隔"
-                        value="{{$params}}">
+                        <label for="inputAddress">Params（json 数组）</label>
+                        <div id="editor" style="height: 300px">{{$params}}</div>
+                        <input type="hidden" name="params" id="params" value="{{$params}}">
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Request</button>
@@ -99,6 +99,15 @@
 <script src="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/json.min.js"></script>
+<script src="https://cdn.bootcss.com/ace/1.4.2/ace.js"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/json");
+    editor.on('change',function(e){
+        $('#params').val(editor.getValue())
+    })
+</script>
 <script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>
