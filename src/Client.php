@@ -35,7 +35,7 @@ class Client
     public function __construct($config)
     {
         $this->config = $config;
-        $this->id = app('request')->header('X-Request-Id') ?: "no-x-request-id";
+        $this->id = 1;
     }
 
     /**
@@ -131,8 +131,7 @@ class Client
      */
     protected function id()
     {
-//        return  $this->id.'-'.time();
-        return $this->id;
+        return $this->id++;
     }
 
 }

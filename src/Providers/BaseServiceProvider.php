@@ -30,7 +30,7 @@ class BaseServiceProvider extends ServiceProvider
         $this->setupConfig();
         $this->app->singleton("rpc.logger", function () {
             $config = config('rpc');
-            $stream = new StreamHandler($this->app->storagePath() . $config['log_path']);
+            $stream = new StreamHandler($config['log_path']);
             $stream->setFormatter(new $config['log_formatter']());
             $logger = new Logger('RPC.LOGGER');
             return $logger->pushHandler($stream);

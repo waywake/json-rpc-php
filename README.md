@@ -170,3 +170,19 @@ http://host/rpc/doc.html 文档地址
 严格使用系统定义错误码 详见json-rpc/src/Server/JsonRpcBase.php
 
 ###更新日志
+
+###文档注释格式
+```
+   /**
+     * @title 用户登录API
+     * @url https://wwww.baidu.com/login
+     * @method POST
+     * @param 类型 字段名称 描述 默认 是否必须
+     * @param string password 密码 空 必须
+     * @code 1 成功
+     * @code 2 失败
+     * @return int code 状态码（具体参见状态码说明）
+     * @return string msg 提示信息
+     */
+     
+```

@@ -35,11 +35,15 @@ return [
         ],
         'api' => [
             'local' => true,
-            'base_uri' => env('RPC_API_URI','http://api.dev.haowumc.com'),
+            'base_uri' => env('RPC_API_URI','http://sapi.dev.haowumc.com'),
         ],
         'op' => [
             'local' => true,
             'base_uri' => env('RPC_OP_URI','http://op.dev.haowumc.com'),
+        ],
+        'payment' => [
+            'local' => true,
+            'base_uri' => env('RPC_PAYMENT_URI','http://payapi.dev.haowumc.com'),
         ],
     ],
 ];
