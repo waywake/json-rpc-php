@@ -45,9 +45,15 @@ class Security
         }
 
         if (Str::startsWith($ip, [
-            '127.0.0.',
+            '127.0.0.1',
+            //局域网
             '192.168.',
+            //vpc
             '10.0.',
+            //pod network
+            '172.20.',
+            //北京办公区
+            '172.16.'
         ])) {
             return true;
         }

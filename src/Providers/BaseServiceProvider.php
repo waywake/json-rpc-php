@@ -3,14 +3,26 @@
 
 namespace JsonRpc\Providers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
-use JsonRpc\Exception\RpcServerException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 class BaseServiceProvider extends ServiceProvider
 {
 
+    public function boot(){
+        Request::setTrustedProxies([
+            //pod network
+            '172.20.0.0/16',
+            //vpc
+            '10.0.2.0/16',
+            //local
+            '127.0.0.1',
+            //北京办公区
+            '172.16.100.0/16'
+        ], Request::HEADER_X_FORWARDED_ALL);
+    }
 
     protected function setupConfig()
     {
