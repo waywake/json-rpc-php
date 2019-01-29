@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8f285c2463b3be4f6b2e70209334571",
+    "content-hash": "dcf38bcb34b2690d5c6cdd46c9cb1280",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -560,6 +560,72 @@
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
             "time": "2019-01-07T13:39:07+00:00"
+        },
+        {
+            "name": "influxdb/influxdb-php",
+            "version": "1.14.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/influxdata/influxdb-php.git",
+                "reference": "570bd5cdedb9b1c1628dceea5785bc40e08f7e48"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/influxdata/influxdb-php/zipball/570bd5cdedb9b1c1628dceea5785bc40e08f7e48",
+                "reference": "570bd5cdedb9b1c1628dceea5785bc40e08f7e48",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0",
+                "php": "^5.5 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7"
+            },
+            "suggest": {
+                "stefanotorresi/influxdb-php-async": "An asyncronous client for InfluxDB, implemented via ReactPHP."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "InfluxDB\\": "src/InfluxDB"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gianluca Arbezzano",
+                    "email": "gianarb92@gmail.com"
+                },
+                {
+                    "name": "Daniel Martinez",
+                    "email": "danimartcas@hotmail.com"
+                },
+                {
+                    "name": "Stephen Hoogendijk",
+                    "email": "stephen@tca0.nl"
+                }
+            ],
+            "description": "InfluxDB client library for PHP",
+            "keywords": [
+                "client",
+                "influxdata",
+                "influxdb",
+                "influxdb class",
+                "influxdb client",
+                "influxdb library",
+                "time series"
+            ],
+            "time": "2018-07-06T10:13:39+00:00"
         },
         {
             "name": "itxq/api-doc-php",
@@ -1482,7 +1548,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
