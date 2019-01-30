@@ -4,8 +4,9 @@ namespace JsonRpc\Server;
 
 use Illuminate\Http\JsonResponse;
 use JsonRpc\Exception\RpcServerException;
+use JsonRpc\JsonRpc;
 
-class JsonRpcMethod extends JsonRpcBase
+class JsonRpcMethod extends JsonRpc
 {
     protected $id;
     protected $request;

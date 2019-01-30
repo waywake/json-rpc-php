@@ -4,10 +4,11 @@ namespace JsonRpc;
 
 use GuzzleHttp\Exception\ServerException;
 use JsonRpc\Exception\RpcServerException;
+use JsonRpc\Server\JsonRpcBase;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-class Client
+class Client extends JsonRpc
 {
     /**
      * all configuration information
@@ -48,7 +49,6 @@ class Client
         $this->server_config = $this->config['client'][$k];
 
         $default = [
-            'app' => $k,
             'timeout' => 3,
             'allow_redirects' => false,
         ];
@@ -93,7 +93,6 @@ class Client
     protected function post($payload)
     {
         try {
-
             $headers = [
                 'X-Client-App' => $this->config['app'],
             ];
@@ -103,14 +102,19 @@ class Client
                 'json' => $payload,
             ]);
         } catch (ServerException $e) {
-            throw new RpcServerException($e->getMessage(), $e->getCode());
+            $ex = new RpcServerException(self::ErrorMsg[JsonRpc::Rpc_Error_Internal_Error], JsonRpc::Rpc_Error_Internal_Error);
+            if (env("APP_DEBUG") == true) {
+                $resp = $e->getResponse();
+                $ex->setResponse($e->getResponse());
+            }
+            throw $ex;
         }
 
         try {
             $body = \GuzzleHttp\json_decode($resp->getBody(), true);
             app('rpc.logger')->info("client_response", $body);
             if (empty($body)) {
-                throw new RpcServerException('http response empty', 500);
+                throw new RpcServerException('http response empty', JsonRpc::Rpc_Error_System_Error);
             }
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 $message = is_array($body['error']['message']) ? json_encode($body['error']['message']) : $body['error']['message'];
@@ -121,7 +125,11 @@ class Client
 
         } catch (\InvalidArgumentException $e) {
             app('rpc.logger')->error('client_decode_error', array_merge($this->server_config, $payload));
-            throw new RpcServerException('json decode error', -32700);
+            $ex = new RpcServerException($e->getMessage(), JsonRpc::Rpc_Error_Parse_Error);
+            if (env("APP_DEBUG") == true) {
+                $ex->setResponse($resp);
+            }
+            throw $ex;
         }
     }
 

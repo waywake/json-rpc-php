@@ -29,10 +29,10 @@
                         </a>
                     </li>
                     {{--<li class="nav-item">--}}
-                        {{--<a class="nav-link" href="#">--}}
-                            {{--<span data-feather="file"></span>--}}
-                            {{--abc--}}
-                        {{--</a>--}}
+                    {{--<a class="nav-link" href="#">--}}
+                    {{--<span data-feather="file"></span>--}}
+                    {{--abc--}}
+                    {{--</a>--}}
                     {{--</li>--}}
                 </ul>
             </div>
@@ -77,9 +77,13 @@
             </form>
             <div class="row col-md-12">
                 @if( !empty($error) )
-                    <div id='alert' class="alert alert-danger" role="alert">
-                        RpcServerException: {{$error['message']}} with code {{$error['code']}}
+                    <div id='alert' class="alert alert-danger" role="alert" style="width: 100%">
+                        code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{$error['code']}} <br>
+                        message : {{$error['message']}}
                     </div>
+                    <h5>返回内容:</h5>
+                    <iframe style="width: 100%;height: 500px;border: none;" srcdoc='{{$error['resp']->getBody()}}'></iframe>
+                    <hr>
                 @endif
                 @if( !empty($result) )
                     <h5>Result:</h5>
@@ -104,7 +108,7 @@
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/json");
-    editor.on('change',function(e){
+    editor.on('change', function (e) {
         $('#params').val(editor.getValue())
     })
 </script>

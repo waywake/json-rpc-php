@@ -1,8 +1,8 @@
 <?php
 
-namespace JsonRpc\Server;
+namespace JsonRpc;
 
-class JsonRpcBase
+class JsonRpc
 {
     const Rpc_Error_Parse_Error = -32700; //Parse error语法解析错误 服务端接收到无效的json。该错误发送于服务器尝试解析json文本
     const Rpc_Error_Invalid_Request = -32600; //Invalid Request无效请求	发送的json不是一个有效的请求对象。

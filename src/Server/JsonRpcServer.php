@@ -5,8 +5,9 @@ namespace JsonRpc\Server;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use JsonRpc\JsonRpc;
 
-class JsonRpcServer extends JsonRpcBase
+class JsonRpcServer extends JsonRpc
 {
     /**
      * @var Request

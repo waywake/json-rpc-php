@@ -35,21 +35,26 @@ class JsonRpcTool
          */
         $view = view();
 
-        $params = json_decode($request->input('params',"[\r\n]"), true);
+        $params = json_decode($request->input('params', "[\r\n]"), true);
         $method = $request->input('method');
         if ($request->method() == Request::METHOD_POST) {
             try {
-                $result = app('rpc.'.$this->config['name'])->call($method, $params);
+                $result = app('rpc.' . $this->config['name'])->call($method, $params);
                 $view->share('result', json_encode($result, JSON_PRETTY_PRINT));
             } catch (RpcServerException $exception) {
-                $view->share('error', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
+                $resp = $exception->getResponse();
+                $view->share('error', [
+                        'code' => $exception->getCode(),
+                        'message' => $exception->getMessage(),
+                        'resp' => $resp]
+                );
             }
         }
         $methods = $this->getMethods();
-        $view->share('method',$method);
+        $view->share('method', $method);
         $view->share('endpoint', $this->getEndpoint());
         $view->share('methods', $methods);
-        $view->share('params', json_encode($params,JSON_PRETTY_PRINT));
+        $view->share('params', json_encode($params, JSON_PRETTY_PRINT));
 
         foreach ($methods as $name => $class) {
             $desc[$name] = $this->desc($class[0], $class[1]);
@@ -83,6 +88,6 @@ class JsonRpcTool
             $reflector = $this->classes[$class];
         }
 
-        return str_replace("/**\n",'',$reflector->getMethod($method)->getDocComment());
+        return str_replace("/**\n", '', $reflector->getMethod($method)->getDocComment());
     }
 }
