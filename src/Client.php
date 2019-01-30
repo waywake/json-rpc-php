@@ -118,7 +118,8 @@ class Client extends JsonRpc
             }
             if (isset($body['error']) && isset($body['error']['code']) && isset($body['error']['message'])) {
                 $message = is_array($body['error']['message']) ? json_encode($body['error']['message']) : $body['error']['message'];
-                throw new RpcServerException($message, $body['error']['code']);
+                $e = new RpcServerException($message, $body['error']['code']);
+                throw $e;
             }
 
             return $body['result'];

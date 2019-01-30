@@ -20,7 +20,9 @@ class BaseServiceProvider extends ServiceProvider
             //local
             '127.0.0.1',
             //北京办公区
-            '172.16.100.0/16'
+            '172.16.100.0/16',
+            //aliyun slb
+            '100.116.71.0/16',
         ], Request::HEADER_X_FORWARDED_ALL);
     }
 

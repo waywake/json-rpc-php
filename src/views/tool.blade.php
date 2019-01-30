@@ -81,9 +81,12 @@
                         code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{$error['code']}} <br>
                         message : {{$error['message']}}
                     </div>
-                    <h5>返回内容:</h5>
-                    <iframe style="width: 100%;height: 500px;border: none;" srcdoc='{{$error['resp']->getBody()}}'></iframe>
-                    <hr>
+                    @if($error['resp'])
+                        <h5>返回内容:</h5>
+                        <iframe style="width: 100%;height: 500px;border: none;"
+                                srcdoc='{{$error['resp']->getBody()}}'></iframe>
+                        <hr>
+                    @endif
                 @endif
                 @if( !empty($result) )
                     <h5>Result:</h5>
