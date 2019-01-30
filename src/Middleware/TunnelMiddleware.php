@@ -42,7 +42,7 @@ class TunnelMiddleware
             $content = $response->getOriginalContent();
             $status = isset($content['error']) ? $content['error']['code'] : 200;
 
-            $client = new \InfluxDB\Client('http://localhost', '8086');
+            $client = new \InfluxDB\Client('127.0.0.1', '8086');
             $database = $client->selectDB('rpc_monitor');
             $points = array(
                 new Point(

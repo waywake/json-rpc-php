@@ -28,14 +28,24 @@ class JsonRpcMethod extends JsonRpcBase
     public function error($code, $msg)
     {
 
-        return [
-            'jsonrpc' => '2.0',
-            'error' => [
-                'code' => $code,
-                'message' => is_array($msg) ? json_encode($msg) : $msg,
-            ],
-            'id' => $this->id
-        ];
+        return is_string($msg)
+            ? [
+                'jsonrpc' => '2.0',
+                'error' => [
+                    'code' => $code,
+                    'message' => $msg,
+                ],
+                'id' => $this->id
+            ]
+            : [
+                'jsonrpc' => '2.0',
+                'error' => [
+                    'code' => $code,
+                    'message' => self::ErrorMsg[$code],
+                    'data' => $msg
+                ],
+                'id' => $this->id
+            ];
     }
 
 }
