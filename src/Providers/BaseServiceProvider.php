@@ -16,13 +16,13 @@ class BaseServiceProvider extends ServiceProvider
             //pod network
             '172.20.0.0/16',
             //vpc
-            '10.0.2.0/16',
+            '10.0.0.0/16',
             //local
             '127.0.0.1',
             //北京办公区
-            '172.16.100.0/16',
+            '172.16.0.0/16',
             //aliyun slb
-            '100.116.71.0/16',
+            '100.116.0.0/16',
         ], Request::HEADER_X_FORWARDED_ALL);
     }
 
