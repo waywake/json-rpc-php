@@ -26,7 +26,7 @@ class LumenServerServiceProvider extends BaseServiceProvider
     public function boot()
     {
         parent::boot();
-        $this->app->middleware(TunnelMiddleware::class);
+//        $this->app->middleware(TunnelMiddleware::class);
         $this->app->routeMiddleware(['rpc.security' => Security::class]);
         $this->app->router->group([
             'prefix' => 'rpc',
