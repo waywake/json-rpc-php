@@ -84,24 +84,24 @@ class JsonRpcServer extends JsonRpcBase
      * @param string $method 参数名称
      * @return array 返回结果
      */
-    protected function parseMethod($method)
-    {
-        $method = explode('.', $method);
-
-        if (count($method) < 2) {
-            return ['', ''];
-        }
-
-        $function = array_pop($method);
-        $class = 'Rpc' . ucwords(array_pop($method));
-
-        foreach ($method as $one) {
-            $class = ucwords($one) . '\\' . $class;
-        }
-
-        $class = "App\Rpc\\$class";
-        return [$class, $function];
-    }
+//    protected function parseMethod($method)
+//    {
+//        $method = explode('.', $method);
+//
+//        if (count($method) < 2) {
+//            return ['', ''];
+//        }
+//
+//        $function = array_pop($method);
+//        $class = 'Rpc' . ucwords(array_pop($method));
+//
+//        foreach ($method as $one) {
+//            $class = ucwords($one) . '\\' . $class;
+//        }
+//
+//        $class = "App\Rpc\\$class";
+//        return [$class, $function];
+//    }
 
 
     protected function isEnoughParameter($class, $method, $parameters)

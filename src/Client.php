@@ -97,7 +97,7 @@ class Client
             $headers = [
                 'X-Client-App' => $this->config['app'],
             ];
-            app('rpc.logger')->info("client_request",array_merge($this->server_config, $payload));
+            app('rpc.logger')->info("client_request", array_merge($this->server_config, $payload));
             $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
                 'headers' => $headers,
                 'json' => $payload,
@@ -108,7 +108,7 @@ class Client
 
         try {
             $body = \GuzzleHttp\json_decode($resp->getBody(), true);
-            app('rpc.logger')->info("client_response",$body);
+            app('rpc.logger')->info("client_response", $body);
             if (empty($body)) {
                 throw new RpcServerException('http response empty', 500);
             }
@@ -120,7 +120,7 @@ class Client
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
-            app('rpc.logger')->error('client_decode_error',array_merge($this->server_config, $payload));
+            app('rpc.logger')->error('client_decode_error', array_merge($this->server_config, $payload));
             throw new RpcServerException('json decode error', -32700);
         }
     }

@@ -15,5 +15,9 @@
         }
     },
     "require-dev": {
+    },
+    "api-doc-php": {
+        "type": "vcs",
+        "url": "git@git.int.haowumc.com:composer/php-rpc-doc.git"
     }
 }
