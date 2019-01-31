@@ -40,6 +40,7 @@ class TunnelMiddleware
 		//过滤tool返回结果
 		if ($response instanceof JsonResponse) {
 			if (app()->environment('dev', 'production')) {
+				app('rpc.logger')->info('record to influxdb');
 				$content = $response->getOriginalContent();
 				$status = isset($content['error']) ? $content['error']['code'] : 200;
 				$client = new \InfluxDB\Client("10.0.1.67");
@@ -52,7 +53,7 @@ class TunnelMiddleware
 						['content' => $request->getContent()]
 					)
 				);
-				$database->writePoints($points, Database::PRECISION_SECONDS);
+				app('rpc.logger')->info('record to influxdb', ['rs' => $database->writePoints($points, Database::PRECISION_SECONDS)]);
 			}
 			
 		}
