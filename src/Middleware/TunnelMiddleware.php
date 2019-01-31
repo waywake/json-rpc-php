@@ -39,6 +39,7 @@ class TunnelMiddleware
 	{
 		//过滤tool返回结果
 		if ($response instanceof JsonResponse) {
+			app('rpc.logger')->info('record to influxdb', [app()->environment('dev', 'production')]);
 			if (app()->environment('dev', 'production')) {
 				app('rpc.logger')->info('record to influxdb');
 				$content = $response->getOriginalContent();
