@@ -49,7 +49,7 @@ class TunnelMiddleware
 				$points = array(
 					new Point(
 						'monitor',
-						null,
+						1,
 						['app' => env('APP_NAME'), 'status' => $status, 'env' => app()->environment()],
 						['content' => $request->getContent()]
 					)
