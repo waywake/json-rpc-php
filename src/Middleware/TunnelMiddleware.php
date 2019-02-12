@@ -49,7 +49,7 @@ class TunnelMiddleware
 						'monitor',
 						1,
 						['app' => env('APP_NAME'), 'status' => $status, 'env' => app()->environment()],
-						['content' => $request->getContent()]
+						['content' => $request->getContent(), 'status_value' => $status == 200 ? $status : -$status]
 					)
 				);
 				app('rpc.logger')->info('record to influxdb', ['rs' => $database->writePoints($points, Database::PRECISION_SECONDS)]);
