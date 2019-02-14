@@ -179,27 +179,27 @@
         params.param.map(function (val, index) {
             var $trTemp = $("<tr></tr>");
             //往行里面追加 td单元格
-            $trTemp.append("<td>"+ data[i].param_name +"</td>");
-            $trTemp.append("<td>"+ data[i].param_type +"</td>");
-            $trTemp.append("<td>"+ data[i].param_title +"</td>");
-            $trTemp.append("<td>"+ data[i].param_default +"</td>");
-            $trTemp.append("<td>"+ data[i].param_require +"</td>");
-            $trTemp.appendTo("#methodRequird");
+            $trTemp.append("<td>"+ val.param_name +"</td>");
+            $trTemp.append("<td>"+ val.param_type +"</td>");
+            $trTemp.append("<td>"+ val.param_title +"</td>");
+            $trTemp.append("<td>"+ val.param_default +"</td>");
+            $trTemp.append("<td>"+ val.param_require +"</td>");
+            $trTemp.appendTo("#paramRequird");
         })
         params.return.map(function (val, index) {
             var $trTemp = $("<tr></tr>");
             //往行里面追加 td单元格
-            $trTemp.append("<td>"+ data[i].return_name +"</td>");
-            $trTemp.append("<td>"+ data[i].return_type +"</td>");
-            $trTemp.append("<td>"+ data[i].return_title +"</td>");
-            $trTemp.appendTo("#methodRequird");
+            $trTemp.append("<td>"+ val.return_name +"</td>");
+            $trTemp.append("<td>"+ val.return_type +"</td>");
+            $trTemp.append("<td>"+ val.return_title +"</td>");
+            $trTemp.appendTo("#returnRequird");
         })
         params.code.map(function (val, index) {
             var $trTemp = $("<tr></tr>");
             //往行里面追加 td单元格
-            $trTemp.append("<td>"+ data[i].code +"</td>");
-            $trTemp.append("<td>"+ data[i].content +"</td>");
-            $trTemp.appendTo("#methodRequird");
+            $trTemp.append("<td>"+ val.code +"</td>");
+            $trTemp.append("<td>"+ val.content +"</td>");
+            $trTemp.appendTo("#codeRequird");
         })
     }
 </script>
