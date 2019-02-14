@@ -67,7 +67,7 @@
                         <p class="table-title">
                             <span class="btn btn-xs btn-info">请求参数</span>
                         </p>
-                        <table id="methodRequird" class="table">
+                        <table id="paramRequird" class="table">
                             <tr>
                                 <td>参数</td>
                                 <td>类型</td>
@@ -75,6 +75,27 @@
                                 <td>默认值</td>
                                 <td>是否必须</td>
                             </tr>
+                        </table>
+                    </div>
+                    <div class="table-item col-md-12">
+                        <p class="table-title">
+                            <span class="btn btn-xs btn-info">返回参数</span>
+                        </p>
+                        <table id="returnRequird" class="table">
+                            <tr>
+                                <td>参数</td>
+                                <td>类型</td>
+                                <td>描述</td>
+                                <td>默认值</td>
+                                <td>是否必须</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="table-item col-md-12">
+                        <p class="table-title">
+                            <span class="btn btn-xs btn-info">状态码说明</span>
+                        </p>
+                        <table id="codeRequird" class="table">
                         </table>
                     </div>
                 </div>
@@ -128,15 +149,34 @@
     editor.on('change', function (e) {
         $('#params').val(editor.getValue())
     })
+    $(document).ready(function(){
+        intTable();
+        var valKey =$("#method option:first-child").text();
+        var data = <?php echo $data; ?>;
+        var methodArray = data[valKey];
+        changeTable(methodArray)
+    });
     $('#method').bind('change', function() {
         var valKey = $("#method").find("option:selected").text();
         var data = <?php echo $data; ?>;
         var methodArray = data[valKey];
-        $("#methodRequird").empty();
-        var html = "<tr><td>参数</td><td>类型</td><td>描述</td><td>默认值</td><td>是否必须</td></tr>";
-        $(html).appendTo("#methodRequird");
-        console.log(methodArray, valKey)
-        methodArray.map(function (val, index) {
+        intTable()
+        changeTable(methodArray)
+    })
+    function intTable() {
+        $("#paramRequird").empty();
+        $("#returnRequird").empty();
+        $("#codeRequird").empty();
+        var html1 = "<tr><td>参数</td><td>类型</td><td>描述</td><td>默认值</td><td>是否必须</td></tr>";
+        var html2 = "<tr><td>参数</td><td>类型</td><td>描述</td>/tr>";
+        var html3 = "<tr><td>状态码</td><td>描述</td></tr>";
+        $(html1).appendTo("#paramRequird");
+        $(html2).appendTo("#returnRequird");
+        $(html3).appendTo("#codeRequird");
+    }
+
+    function changeTable(params) {
+        params.param.map(function (val, index) {
             var $trTemp = $("<tr></tr>");
             //往行里面追加 td单元格
             $trTemp.append("<td>"+ data[i].param_name +"</td>");
@@ -146,7 +186,22 @@
             $trTemp.append("<td>"+ data[i].param_require +"</td>");
             $trTemp.appendTo("#methodRequird");
         })
-    })
+        params.return.map(function (val, index) {
+            var $trTemp = $("<tr></tr>");
+            //往行里面追加 td单元格
+            $trTemp.append("<td>"+ data[i].return_name +"</td>");
+            $trTemp.append("<td>"+ data[i].return_type +"</td>");
+            $trTemp.append("<td>"+ data[i].return_title +"</td>");
+            $trTemp.appendTo("#methodRequird");
+        })
+        params.code.map(function (val, index) {
+            var $trTemp = $("<tr></tr>");
+            //往行里面追加 td单元格
+            $trTemp.append("<td>"+ data[i].code +"</td>");
+            $trTemp.append("<td>"+ data[i].content +"</td>");
+            $trTemp.appendTo("#methodRequird");
+        })
+    }
 </script>
 <script>hljs.initHighlightingOnLoad();</script>
 </body>
