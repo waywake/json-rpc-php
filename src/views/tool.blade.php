@@ -55,7 +55,6 @@
                     {{--</div>--}}
                 </div>
                 <div class="form-row">
-
                     <div class="form-group col-md-12">
                         <label for="inputAddress">Method</label>
                         <select class="form-control" id="method" name="method">
@@ -64,9 +63,24 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="table-item col-md-12">
+                        <p class="table-title">
+                            <span class="btn btn-xs btn-info">请求参数</span>
+                        </p>
+                        <table id="methodRequird" class="table">
+                            <tr>
+                                <td>参数</td>
+                                <td>类型</td>
+                                <td>描述</td>
+                                <td>默认值</td>
+                                <td>是否必须</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div>
                 </div>
                 <div class="form-row">
-
                     <div class="form-group col-md-12">
                         <label for="inputAddress">Params（json 数组）</label>
                         <div id="editor" style="height: 300px">{{$params}}</div>
@@ -107,12 +121,31 @@
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/json.min.js"></script>
 <script src="https://cdn.bootcss.com/ace/1.4.2/ace.js"></script>
-<script>
+<script type="text/javascript">
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/json");
     editor.on('change', function (e) {
         $('#params').val(editor.getValue())
+    })
+    $('#method').bind('change', function() {
+        var valKey = $("#method").find("option:selected").text();
+        var data = <?php echo $data; ?>;
+        var methodArray = data[valKey];
+        $("#methodRequird").empty();
+        var html = "<tr><td>参数</td><td>类型</td><td>描述</td><td>默认值</td><td>是否必须</td></tr>";
+        $(html).appendTo("#methodRequird");
+        console.log(methodArray, valKey)
+        methodArray.map(function (val, index) {
+            var $trTemp = $("<tr></tr>");
+            //往行里面追加 td单元格
+            $trTemp.append("<td>"+ data[i].param_name +"</td>");
+            $trTemp.append("<td>"+ data[i].param_type +"</td>");
+            $trTemp.append("<td>"+ data[i].param_title +"</td>");
+            $trTemp.append("<td>"+ data[i].param_default +"</td>");
+            $trTemp.append("<td>"+ data[i].param_require +"</td>");
+            $trTemp.appendTo("#methodRequird");
+        })
     })
 </script>
 <script>hljs.initHighlightingOnLoad();</script>
