@@ -1,13 +1,13 @@
 <html>
 <head>
-    <title>Json Rpc Doc</title>
+    <title>Json Rpc Debug Tool</title>
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/highlight.js/9.13.1/styles/ocean.min.css" rel="stylesheet">
 </head>
 <body>
 
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Json Rpc Doc</a>
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Json Rpc Debug Tool</a>
     {{--<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">--}}
     {{--<ul class="navbar-nav px-3">--}}
     {{--<li class="nav-item text-nowrap">--}}
@@ -23,19 +23,17 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">
+                        <a class="nav-link active" href="/rpc/doc.html">
                             <span data-feather="home"></span>
-                            Method <span class="sr-only">(current)</span>
+                            文档 <span class="sr-only">(current)</span>
                         </a>
                     </li>
-                    @foreach( $methods as $method )
-                        <li class="nav-item">
-                            <a class="nav-link" href="#{{$method['method']}}">
-                                <span data-feather="file"></span>
-                                {{$method['method']}}
-                            </a>
-                        </li>
-                    @endforeach
+                    {{--<li class="nav-item">--}}
+                    {{--<a class="nav-link" href="#">--}}
+                    {{--<span data-feather="file"></span>--}}
+                    {{--abc--}}
+                    {{--</a>--}}
+                    {{--</li>--}}
                 </ul>
             </div>
         </nav>
@@ -45,8 +43,8 @@
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <label for="endpoint">Endpoint</label>
-                        {{--<input type="text" class="form-control" id="endpoint" placeholder="Endpoint"--}}
-                        {{--                               value="{{$endpoint}}" readonly>--}}
+                        <input type="text" class="form-control" id="endpoint" placeholder="Endpoint"
+                               value="{{$endpoint}}" readonly>
                     </div>
                     {{--<div class="form-group col-md-2">--}}
                     {{--<label for="method">Request Method</label>--}}
@@ -57,39 +55,60 @@
                     {{--</div>--}}
                 </div>
                 <div class="form-row">
-
                     <div class="form-group col-md-12">
                         <label for="inputAddress">Method</label>
                         <select class="form-control" id="method" name="method">
-                            {{--@foreach($methods as $k => $v)--}}
-                            {{--<option>{{$k}}</option>--}}
-                            {{--@endforeach--}}
+                            @foreach($methods as $k => $v)
+                                <option @if($method == $k) selected @endif>{{$k}}</option>
+                            @endforeach
                         </select>
                     </div>
+                    <div class="table-item col-md-12">
+                        <p class="table-title">
+                            <span class="btn btn-xs btn-info">请求参数</span>
+                        </p>
+                        <table id="methodRequird" class="table">
+                            <tr>
+                                <td>参数</td>
+                                <td>类型</td>
+                                <td>描述</td>
+                                <td>默认值</td>
+                                <td>是否必须</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div>
                 </div>
                 <div class="form-row">
-
                     <div class="form-group col-md-12">
-                        <label for="inputAddress">Params</label>
-                        {{--<input type="text" class="form-control" name="params" id="params" placeholder="逗号分隔"--}}
-                        {{--value="{{$params}}">--}}
+                        <label for="inputAddress">Params（json 数组）</label>
+                        <div id="editor" style="height: 300px">{{$params}}</div>
+                        <input type="hidden" name="params" id="params" value="{{$params}}">
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Request</button>
             </form>
             <div class="row col-md-12">
-                {{--@if( !empty($error) )--}}
-                {{--<div id='alert' class="alert alert-danger" role="alert">--}}
-                {{--RpcServerException: {{$error['message']}} with code {{$error['code']}}--}}
-                {{--</div>--}}
-                {{--@endif--}}
-                {{--@if( !empty($result) )--}}
-                {{--<h5>Result:</h5>--}}
+                @if( !empty($error) )
+                    <div id='alert' class="alert alert-danger" role="alert" style="width: 100%">
+                        code&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{$error['code']}} <br>
+                        message : {{$error['message']}}
+                    </div>
+                    @if($error['resp'])
+                        <h5>返回内容:</h5>
+                        <iframe style="width: 100%;height: 500px;border: none;"
+                                srcdoc='{{$error['resp']->getBody()}}'></iframe>
+                        <hr>
+                    @endif
+                @endif
+                @if( !empty($result) )
+                    <h5>Result:</h5>
 
-                {{--<div class="col-md-12">--}}
-                {{--<pre><code class="json">{{$result}}</code></pre>--}}
-                {{--</div>--}}
-                {{--@endif--}}
+                    <div class="col-md-12">
+                        <pre><code class="json">{{$result}}</code></pre>
+                    </div>
+                @endif
             </div>
 
         </main>
@@ -101,10 +120,34 @@
 <script src="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/json.min.js"></script>
-<script>hljs.initHighlightingOnLoad();</script>
-<script>
-    var data = <?php echo $data; ?>;
-    console.log(data)
+<script src="https://cdn.bootcss.com/ace/1.4.2/ace.js"></script>
+<script type="text/javascript">
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/json");
+    editor.on('change', function (e) {
+        $('#params').val(editor.getValue())
+    })
+    $('#method').bind('change', function() {
+        var valKey = $("#method").find("option:selected").text();
+        var data = <?php echo $data; ?>;
+        var methodArray = data[valKey];
+        $("#methodRequird").empty();
+        var html = "<tr><td>参数</td><td>类型</td><td>描述</td><td>默认值</td><td>是否必须</td></tr>";
+        $(html).appendTo("#methodRequird");
+        console.log(methodArray, valKey)
+        methodArray.map(function (val, index) {
+            var $trTemp = $("<tr></tr>");
+            //往行里面追加 td单元格
+            $trTemp.append("<td>"+ data[i].param_name +"</td>");
+            $trTemp.append("<td>"+ data[i].param_type +"</td>");
+            $trTemp.append("<td>"+ data[i].param_title +"</td>");
+            $trTemp.append("<td>"+ data[i].param_default +"</td>");
+            $trTemp.append("<td>"+ data[i].param_require +"</td>");
+            $trTemp.appendTo("#methodRequird");
+        })
+    })
 </script>
+<script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>
