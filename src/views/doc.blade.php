@@ -102,5 +102,9 @@
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/json.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
+<script>
+    var data = <?php echo $data; ?>;
+    console.log(data)
+</script>
 </body>
 </html>
