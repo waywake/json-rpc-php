@@ -108,7 +108,7 @@
                         <input type="hidden" name="params" id="params" value="{{$params}}">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Request</button>
+                <button id="submit-btn" type="submit" class="btn btn-primary">Request</button>
             </form>
             <div class="row col-md-12">
                 @if( !empty($error) )
@@ -203,6 +203,29 @@
             $trTemp.appendTo("#codeRequird");
         })
     }
+    function changeLocoal(params) {
+        var storage=window.localStorage;
+        var valKey = $("#method").find("option:selected").text();
+        var data=editor.getValue();
+        var d=JSON.stringify(data).replaceAll("\r|\n|\\s", "");
+        storage.setItem(valKey,d);
+    }
+
+    function changeNavShow(){
+        var storage=window.localStorage;
+        for(var i=0;i<storage.length;i++){
+            var key=storage.key(i);
+            var $trTemp = $('<li class="nav-item"></li>');
+            $trTemp.append('<span class="nav-link">'+ key +'</span>');
+        }
+    }
+    $('#submit-btn').bind('click',function(params) {
+        var storage=window.localStorage;
+        var valKey = $("#method").find("option:selected").text();
+        var data=editor.getValue();
+        var d=JSON.stringify(data);
+        storage.setItem(valKey,d);
+    })
 </script>
 <script>hljs.initHighlightingOnLoad();</script>
 </body>
