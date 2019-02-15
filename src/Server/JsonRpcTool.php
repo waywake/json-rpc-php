@@ -4,6 +4,7 @@ namespace JsonRpc\Server;
 
 use Illuminate\Http\Request;
 use Illuminate\View\Factory;
+use itxq\apidoc\BootstrapApiDoc;
 use JsonRpc\Exception\RpcServerException;
 use Monolog\Logger;
 
@@ -50,8 +51,21 @@ class JsonRpcTool
                 );
             }
         }
+        $methods = [];
+        foreach ($this->config['map'] as $key => $item) {
+            if (!in_array($item[0], $methods)) {
+                $methods[] = $item[0];
+            }
+        }
+        $config = [
+            'class' => $methods,
+            'filter_method' => [],
+        ];
+
+        $api = new BootstrapApiDoc($config);
+        $data = $api->getApiDocTmp();
         $methods = $this->getMethods();
-        $view->share('method', $method);
+        $view->share('data',json_encode($data));
         $view->share('endpoint', $this->getEndpoint());
         $view->share('methods', $methods);
         $view->share('params', json_encode($params, JSON_PRETTY_PRINT));
