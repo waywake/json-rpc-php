@@ -21,7 +21,7 @@
 
         <nav class="col-md-3 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
-                <ul class="nav flex-column">
+                <ul id="nav-content" class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" href="/rpc/doc.html">
                             <span data-feather="home"></span>
@@ -145,7 +145,9 @@
 <script type="text/javascript">
     var editor = ace.edit("editor");
     var params = <?php echo $params; ?>;
+    var data = <?php echo $data; ?>;
     var error_empty = <?php echo isset($error) ? 0 : 1; ?>;
+    console.log(params)
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/json");
     editor.on('change', function (e) {
@@ -156,11 +158,17 @@
         var valKey =$("#method option:first-child").text();
         var data = <?php echo $data; ?>;
         var methodArray = data[valKey];
-        changeTable(methodArray)
+        changeTable(methodArray);
+        if (error_empty > 0) {
+            var storage = window.localStorage;
+            var valKey = $("#method").find("option:selected").text();
+            var d = JSON.stringify(params);
+            storage.setItem(valKey, d);
+        }
+        changeNavShow()
     });
-    $('#method').bind('change', function() {
+    $('#method').on('change', function() {
         var valKey = $("#method").find("option:selected").text();
-        var data = <?php echo $data; ?>;
         var methodArray = data[valKey];
         intTable()
         changeTable(methodArray)
@@ -217,15 +225,22 @@
         for(var i=0;i<storage.length;i++){
             var key=storage.key(i);
             var $trTemp = $('<li class="nav-item"></li>');
-            $trTemp.append('<span class="nav-link">'+ key +'</span>');
+            $trTemp.append('<a class="nav-link">'+ key +'</a>');
+            $trTemp.appendTo("#nav-content");
+            $trTemp.attr('methond',key)
         }
     }
-    $('#submit-btn').bind('click',function(params) {
-        var storage=window.localStorage;
-        var valKey = $("#method").find("option:selected").text();
-        var data=editor.getValue();
-        var d=JSON.stringify(data);
-        storage.setItem(valKey,d);
+    $('#nav-content').on('click','.nav-item', function(){
+        var activeKey = $(this).attr('methond');
+        var param = localStorage.getItem(activeKey)
+        $('.nav-item').removeClass('bg-info');
+        $(this).addClass('bg-info');
+        $("#method").val(activeKey);
+        var methodArray = data[activeKey];
+        intTable();
+        changeTable(methodArray);
+        $('#params').val(param);
+        editor.setValue(param)
     })
 </script>
 <script>hljs.initHighlightingOnLoad();</script>
