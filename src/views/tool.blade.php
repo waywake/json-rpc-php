@@ -144,7 +144,8 @@
 <script src="https://cdn.bootcss.com/ace/1.4.2/ace.js"></script>
 <script type="text/javascript">
     var editor = ace.edit("editor");
-    var error_empty = <?php echo empty($error); ?>;
+    var params = <?php echo $params; ?>;
+    var error_empty = <?php echo isset($error) ? 0 : 1; ?>;
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/json");
     editor.on('change', function (e) {
