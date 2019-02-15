@@ -21,7 +21,7 @@
 
         <nav class="col-md-3 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
-                <ul class="nav flex-column">
+                <ul id="nav-content" class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" href="/rpc/doc.html">
                             <span data-feather="home"></span>
@@ -55,7 +55,6 @@
                     {{--</div>--}}
                 </div>
                 <div class="form-row">
-
                     <div class="form-group col-md-12">
                         <label for="inputAddress">Method</label>
                         <select class="form-control" id="method" name="method">
@@ -64,16 +63,52 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="table-item col-md-12">
+                        <p class="table-title">
+                            <span class="btn btn-xs btn-info">请求参数</span>
+                        </p>
+                        <table id="paramRequird" class="table">
+                            <tr>
+                                <td>参数</td>
+                                <td>类型</td>
+                                <td>描述</td>
+                                <td>默认值</td>
+                                <td>是否必须</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="table-item col-md-12">
+                        <p class="table-title">
+                            <span class="btn btn-xs btn-info">返回参数</span>
+                        </p>
+                        <table id="returnRequird" class="table">
+                            <tr>
+                                <td>参数</td>
+                                <td>类型</td>
+                                <td>描述</td>
+                                <td>默认值</td>
+                                <td>是否必须</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="table-item col-md-12">
+                        <p class="table-title">
+                            <span class="btn btn-xs btn-info">状态码说明</span>
+                        </p>
+                        <table id="codeRequird" class="table">
+                        </table>
+                    </div>
+                </div>
+                <div>
                 </div>
                 <div class="form-row">
-
                     <div class="form-group col-md-12">
                         <label for="inputAddress">Params（json 数组）</label>
                         <div id="editor" style="height: 300px">{{$params}}</div>
                         <input type="hidden" name="params" id="params" value="{{$params}}">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Request</button>
+                <button id="submit-btn" type="submit" class="btn btn-primary">Request</button>
             </form>
             <div class="row col-md-12">
                 @if( !empty($error) )
@@ -107,12 +142,105 @@
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
 <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/json.min.js"></script>
 <script src="https://cdn.bootcss.com/ace/1.4.2/ace.js"></script>
-<script>
+<script type="text/javascript">
     var editor = ace.edit("editor");
+    var params = <?php echo $params; ?>;
+    var data = <?php echo $data; ?>;
+    var error_empty = <?php echo isset($error) ? 0 : 1; ?>;
+    console.log(params)
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/json");
     editor.on('change', function (e) {
         $('#params').val(editor.getValue())
+    })
+    $(document).ready(function(){
+        intTable();
+        var valKey =$("#method option:first-child").text();
+        var data = <?php echo $data; ?>;
+        var methodArray = data[valKey];
+        changeTable(methodArray);
+        if (error_empty > 0) {
+            var storage = window.localStorage;
+            var valKey = $("#method").find("option:selected").text();
+            var d = JSON.stringify(params);
+            storage.setItem(valKey, d);
+        }
+        changeNavShow()
+    });
+    $('#method').on('change', function() {
+        var valKey = $("#method").find("option:selected").text();
+        var methodArray = data[valKey];
+        intTable()
+        changeTable(methodArray)
+    })
+    function intTable() {
+        $("#paramRequird").empty();
+        $("#returnRequird").empty();
+        $("#codeRequird").empty();
+        var html1 = "<tr><td>参数</td><td>类型</td><td>描述</td><td>默认值</td><td>是否必须</td></tr>";
+        var html2 = "<tr><td>参数</td><td>类型</td><td>描述</td>/tr>";
+        var html3 = "<tr><td>状态码</td><td>描述</td></tr>";
+        $(html1).appendTo("#paramRequird");
+        $(html2).appendTo("#returnRequird");
+        $(html3).appendTo("#codeRequird");
+    }
+
+    function changeTable(params) {
+        params.param.map(function (val, index) {
+            var $trTemp = $("<tr></tr>");
+            //往行里面追加 td单元格
+            $trTemp.append("<td>"+ val.param_name +"</td>");
+            $trTemp.append("<td>"+ val.param_type +"</td>");
+            $trTemp.append("<td>"+ val.param_title +"</td>");
+            $trTemp.append("<td>"+ val.param_default +"</td>");
+            $trTemp.append("<td>"+ val.param_require +"</td>");
+            $trTemp.appendTo("#paramRequird");
+        })
+        params.return.map(function (val, index) {
+            var $trTemp = $("<tr></tr>");
+            //往行里面追加 td单元格
+            $trTemp.append("<td>"+ val.return_name +"</td>");
+            $trTemp.append("<td>"+ val.return_type +"</td>");
+            $trTemp.append("<td>"+ val.return_title +"</td>");
+            $trTemp.appendTo("#returnRequird");
+        })
+        params.code.map(function (val, index) {
+            var $trTemp = $("<tr></tr>");
+            //往行里面追加 td单元格
+            $trTemp.append("<td>"+ val.code +"</td>");
+            $trTemp.append("<td>"+ val.content +"</td>");
+            $trTemp.appendTo("#codeRequird");
+        })
+    }
+    function changeLocoal(params) {
+        var storage=window.localStorage;
+        var valKey = $("#method").find("option:selected").text();
+        var data=editor.getValue();
+        var d=JSON.stringify(data).replaceAll("\r|\n|\\s", "");
+        storage.setItem(valKey,d);
+    }
+
+    function changeNavShow(){
+        var storage=window.localStorage;
+        for(var i=0;i<storage.length;i++){
+            var key=storage.key(i);
+            var $trTemp = $('<li class="nav-item"></li>');
+            $trTemp.append('<a class="nav-link">'+ key +'</a>');
+            $trTemp.appendTo("#nav-content");
+            $trTemp.attr('methond',key)
+        }
+    }
+    $('#nav-content').on('click','.nav-item', function(){
+        var activeKey = $(this).attr('methond');
+        var param = localStorage.getItem(activeKey)
+        $('.nav-item').removeClass('bg-info');
+        $(this).addClass('bg-info');
+        $("#method").val(activeKey);
+        var methodArray = data[activeKey];
+        intTable();
+        changeTable(methodArray);
+        $('#params').val(param);
+        editor.setValue(param)
     })
 </script>
 <script>hljs.initHighlightingOnLoad();</script>
