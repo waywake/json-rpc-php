@@ -68,6 +68,7 @@ class JsonRpcTool
         $view->share('data',json_encode($data));
         $view->share('endpoint', $this->getEndpoint());
         $view->share('methods', $methods);
+        $view->share('method', $method);
         $view->share('params', json_encode($params, JSON_PRETTY_PRINT));
 
         foreach ($methods as $name => $class) {
