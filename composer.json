@@ -8,7 +8,7 @@
         "illuminate/http": "^5.5",
         "monolog/monolog": "^1.24",
         "influxdb/influxdb-php": "^1.14",
-        "paidian/rpc-doc-php": "^1.1"
+        "itxq/api-doc-php": "^1.1"
     },
     "autoload": {
         "psr-4": {
