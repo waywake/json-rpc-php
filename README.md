@@ -12,6 +12,8 @@
 
 执行 
 ```bash
+composer config repositories.php-rpc-doc vcs git@git.int.haowumc.com:composer/php-rpc-doc.git
+composer require itxq/api-doc-php
 composer config repositories.php-json-rpc vcs git@git.int.haowumc.com:composer/php-json-rpc.git
 composer require paidian/json-rpc:dev-master
 ```
