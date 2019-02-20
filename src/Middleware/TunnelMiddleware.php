@@ -42,7 +42,7 @@ class TunnelMiddleware
 			if (app()->environment('develop')) {
 				$content = $response->getOriginalContent();
 				$status = isset($content['error']) ? $content['error']['code'] : 200;
-				$client = new \InfluxDB\Client("10.0.1.67", 8086, '', '', false, false, 1, 1);
+				$client = new \InfluxDB\Client("influxdb-svc", 8086, '', '', false, false, 1, 1);
 				$database = $client->selectDB('rpc_monitor');
 				$points = array(
 					new Point(
