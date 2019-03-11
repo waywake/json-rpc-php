@@ -63,7 +63,7 @@ class Client extends JsonRpc
      * @throws RpcServerException
      * @return array
      */
-    public function call($name, $arguments)
+    public function call($name, $arguments, $header = [])
     {
         $payload = [
             'jsonrpc' => '2.0',
@@ -71,7 +71,7 @@ class Client extends JsonRpc
             'params' => $arguments,
             'id' => $this->id(),
         ];
-        return $this->post($payload);
+        return $this->post($payload, $header);
     }
 
     /**
@@ -90,7 +90,7 @@ class Client extends JsonRpc
      * @throws RpcServerException
      * @return array
      */
-    protected function post($payload)
+    protected function post($payload, $header = [])
     {
         try {
             $headers = [
@@ -98,7 +98,7 @@ class Client extends JsonRpc
             ];
             app('rpc.logger')->info("client_request", array_merge($this->server_config, $payload));
             $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
-                'headers' => $headers,
+                'headers' => array_merge($headers, $header),
                 'json' => $payload,
             ]);
         } catch (ServerException $e) {
