@@ -63,7 +63,7 @@ class Client extends JsonRpc
      * @throws RpcServerException
      * @return array
      */
-    public function call($name, $arguments, $header = [])
+    public function call($name, $arguments, $options = [])
     {
         $payload = [
             'jsonrpc' => '2.0',
@@ -71,7 +71,7 @@ class Client extends JsonRpc
             'params' => $arguments,
             'id' => $this->id(),
         ];
-        return $this->post($payload, $header);
+        return $this->post($payload, $options);
     }
 
     /**
@@ -90,17 +90,17 @@ class Client extends JsonRpc
      * @throws RpcServerException
      * @return array
      */
-    protected function post($payload, $header = [])
+    protected function post($payload, $options = [])
     {
         try {
             $headers = [
                 'X-Client-App' => $this->config['app'],
             ];
             app('rpc.logger')->info("client_request", array_merge($this->server_config, $payload));
-            $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', [
-                'headers' => array_merge($headers, $header),
+            $resp = $this->http->request('POST', 'rpc/json-rpc-v2.json', array_merge([
+                'headers' => $headers,
                 'json' => $payload,
-            ]);
+            ], $options));
         } catch (ServerException $e) {
             $ex = new RpcServerException(self::ErrorMsg[JsonRpc::Rpc_Error_Internal_Error], JsonRpc::Rpc_Error_Internal_Error);
             if (env("APP_DEBUG") == true) {
