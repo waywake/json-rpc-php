@@ -52,8 +52,6 @@ class TunnelMiddleware
 						['status_value' => $status == 200 ? $status : -$status]
 					)
 				);
-				app('rpc.logger')->info('record to influxdb',
-					['rs' => $database->writePoints($points, Database::PRECISION_SECONDS)]);
 			}
 			
 		}
