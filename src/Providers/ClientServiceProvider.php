@@ -21,13 +21,14 @@ class ClientServiceProvider extends BaseServiceProvider
         if (!is_array($config)) {
             throw new RpcServerException("Application's Rpc Client Config Undefind", 500);
         }
-        $this->app->singleton('rpc', function () use ($config) {
-            return new Client($config);
+	    $client = new Client($config);
+	    $this->app->singleton('rpc', function () use ($client) {
+            return $client;
         });
 
         foreach ($config['client'] as $k => $item) {
-            $this->app->singleton('rpc.' . $k, function () use ($k) {
-                return app('rpc')->endpoint($k);
+            $this->app->singleton('rpc.' . $k, function () use ($k, $client) {
+                return $client->endpoint($k);
             });
         }
     }
