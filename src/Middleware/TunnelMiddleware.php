@@ -6,6 +6,7 @@ use Closure;
 use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use InfluxDB\Database;
+use InfluxDB\Exception;
 use InfluxDB\Point;
 
 /**
@@ -39,7 +40,7 @@ class TunnelMiddleware
 	{
 		//过滤tool返回结果
 		if ($response instanceof JsonResponse) {
-			if (app()->environment('develop')) {
+			if (app()->environment('develop', 'production') && env('RPC_MONITOR_SWITCH') == 1) {
 				$content = $response->getOriginalContent();
 				$status = isset($content['error']) ? $content['error']['code'] : 200;
 				$client = new \InfluxDB\Client("influxdb-svc", 8086, '', '', false, false, 1, 1);
@@ -52,6 +53,11 @@ class TunnelMiddleware
 						['status_value' => $status == 200 ? $status : -$status]
 					)
 				);
+				try {
+					$database->writePoints($points, Database::PRECISION_SECONDS);
+				} catch (Exception $exception) {
+					app('log')->error('influxdb-write-wrong', ['code' => $exception->getCode(),'message' => $exception->getMessage()]);
+				}
 			}
 			
 		}
