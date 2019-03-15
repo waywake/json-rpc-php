@@ -40,7 +40,7 @@ class Security
      */
     private function isClientIPPermitted($ip)
     {
-        if (!app()->environment('production', 'staging')) {
+        if (app()->environment('develop', 'local')) {
             return true;
         }
 
