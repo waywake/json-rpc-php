@@ -45,5 +45,9 @@ return [
             'local' => true,
             'base_uri' => env('RPC_PAYMENT_URI','http://payapi.dev.haowumc.com'),
         ],
+	    'wx-server' => [
+		    'local' => true,
+		    'base_uri' => env('RPC_PAYMENT_URI', 'http://sapi.in.haowumc.com'),
+	    ],
     ],
 ];
