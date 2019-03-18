@@ -47,7 +47,7 @@ return [
         ],
 	    'wx-server' => [
 		    'local' => true,
-		    'base_uri' => env('RPC_PAYMENT_URI', 'http://sapi.in.haowumc.com'),
+		    'base_uri' => env('RPC_WX_SERVER_URI', 'http://sapi.in.haowumc.com'),
 	    ],
     ],
 ];
