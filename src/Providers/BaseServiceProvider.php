@@ -29,14 +29,16 @@ class BaseServiceProvider extends ServiceProvider
     protected function setupConfig()
     {
         $source = realpath(__DIR__ . '/../../config/rpc.php');
-
-        if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
-            $this->publishes([$source => config_path('rpc.php')], 'rpc');
-        } elseif ($this->app instanceof LumenApplication) {
-            $this->app->configure('rpc');
-        }
-
+	    $this->app->configure('rpc');
+//        if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
+//            $this->publishes([$source => config_path('rpc.php')], 'rpc');
+//        } elseif ($this->app instanceof LumenApplication) {
+//            $this->app->configure('rpc');
+//        }
+//        var_dump($this->app instanceof LumenApplication); // false
+//        exit();
         $this->mergeConfigFrom($source, 'rpc');
+	
     }
 
     public function register()
