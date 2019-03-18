@@ -16,7 +16,6 @@ class ClientServiceProvider extends BaseServiceProvider
     public function register()
     {
         parent::register();
-        $this->app->configure('rpc');
         $config = config('rpc');
         if (!is_array($config)) {
             throw new RpcServerException("Application's Rpc Client Config Undefind", 500);
