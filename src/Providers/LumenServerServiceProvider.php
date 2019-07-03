@@ -40,6 +40,7 @@ class LumenServerServiceProvider extends BaseServiceProvider
             }
             $callback = function () use ($config) {
                 $server = new JsonRpcServer($config);
+                $server->setLogger($this->logger);
                 return $server->handler();
             };
 

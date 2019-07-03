@@ -7,6 +7,7 @@ use JsonRpc\Exception\RpcServerException;
 use JsonRpc\Server\JsonRpcBase;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 class Client extends JsonRpc
 {
@@ -28,6 +29,11 @@ class Client extends JsonRpc
     protected $http;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * which server rpc call choose
      * @var array
      */
@@ -37,6 +43,11 @@ class Client extends JsonRpc
     {
         $this->config = $config;
         $this->id = 1;
+    }
+
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -60,6 +71,7 @@ class Client extends JsonRpc
     /**
      * @param $name
      * @param $arguments
+     * @param $options []
      * @throws RpcServerException
      * @return array
      */
@@ -92,21 +104,23 @@ class Client extends JsonRpc
      */
     protected function post($payload, $options = [])
     {
-        $uri = 'rpc/json-rpc-v2.json?app='.$this->config['app'];
+        $uri = 'rpc/json-rpc-v2.json?app=' . $this->config['app'];
+
+        $requestId = isset($_SERVER['HTTP_X_REQUEST_ID']) ? $_SERVER['HTTP_X_REQUEST_ID'] : 'nginx-config-err';
+
         try {
             $headers = [
                 'X-Client-App' => $this->config['app'],
-	            'X-Request-Id' => app('request')->header('X-Request-Id')
+                'X-Request-Id' => $requestId,
             ];
-            app('rpc.logger')->info("client_request", array_merge($this->server_config, $payload));
+            $this->logger && $this->logger->info("client_request", array_merge($this->server_config, $payload));
             $resp = $this->http->request('POST', $uri, array_merge([
                 'headers' => $headers,
                 'json' => $payload,
             ], $options));
         } catch (ServerException $e) {
             $ex = new RpcServerException(self::ErrorMsg[JsonRpc::Rpc_Error_Internal_Error], JsonRpc::Rpc_Error_Internal_Error);
-            if (env("APP_DEBUG") == true) {
-                $resp = $e->getResponse();
+            if (function_exists('env') && env("APP_DEBUG") == true) {
                 $ex->setResponse($e->getResponse());
             }
             throw $ex;
@@ -114,7 +128,7 @@ class Client extends JsonRpc
 
         try {
             $body = \GuzzleHttp\json_decode($resp->getBody(), true);
-            app('rpc.logger')->info("client_response", $body);
+            $this->logger && $this->logger->info("client_response", $body);
             if (empty($body)) {
                 throw new RpcServerException('http response empty', JsonRpc::Rpc_Error_System_Error);
             }
@@ -127,9 +141,9 @@ class Client extends JsonRpc
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
-            app('rpc.logger')->error('client_decode_error', array_merge($this->server_config, $payload));
+            $this->logger && $this->logger->error('client_decode_error', array_merge($this->server_config, $payload));
             $ex = new RpcServerException($e->getMessage(), JsonRpc::Rpc_Error_Parse_Error);
-            if (env("APP_DEBUG") == true) {
+            if (function_exists('env') && env("APP_DEBUG") == true) {
                 $ex->setResponse($resp);
             }
             throw $ex;

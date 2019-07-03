@@ -11,7 +11,10 @@ use Monolog\Logger;
 class BaseServiceProvider extends ServiceProvider
 {
 
-    public function boot(){
+    protected $logger;
+
+    public function boot()
+    {
         Request::setTrustedProxies([
             //pod network
             '172.20.0.0/16',
@@ -29,7 +32,7 @@ class BaseServiceProvider extends ServiceProvider
     protected function setupConfig()
     {
         $source = realpath(__DIR__ . '/../../config/rpc.php');
-	    $this->app->configure('rpc');
+        $this->app->configure('rpc');
 //        if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
 //            $this->publishes([$source => config_path('rpc.php')], 'rpc');
 //        } elseif ($this->app instanceof LumenApplication) {
@@ -38,19 +41,17 @@ class BaseServiceProvider extends ServiceProvider
 //        var_dump($this->app instanceof LumenApplication); // false
 //        exit();
         $this->mergeConfigFrom($source, 'rpc');
-	
+
     }
 
     public function register()
     {
         $this->setupConfig();
-        $this->app->singleton("rpc.logger", function () {
-            $config = config('rpc');
-            $stream = new StreamHandler($config['log_path']);
-            $stream->setFormatter(new $config['log_formatter']());
-            $logger = new Logger('RPC.LOGGER');
-            return $logger->pushHandler($stream);
-        });
+        $this->logger = new Logger('RPC.LOGGER');
+        $config = config('rpc');
+        $stream = new StreamHandler($config['log_path']);
+        $stream->setFormatter(new $config['log_formatter']());
+        $this->logger->pushHandler($stream);
     }
 
 }

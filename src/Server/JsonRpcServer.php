@@ -6,6 +6,7 @@ namespace JsonRpc\Server;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use JsonRpc\JsonRpc;
+use Psr\Log\LoggerInterface;
 
 class JsonRpcServer extends JsonRpc
 {
@@ -13,13 +14,19 @@ class JsonRpcServer extends JsonRpc
      * @var Request
      */
     public $request;
+
     /**
-     * @var config 配置
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var  array 配置
      */
     protected $config;
 
     /**
-     * @var rpc.server.map rpc方法
+     * @var array rpc.server.map rpc方法
      */
     protected $map;
 
@@ -30,18 +37,22 @@ class JsonRpcServer extends JsonRpc
         $this->map = $config['map'];
     }
 
+    public function setLogger($logger){
+        $this->logger = $logger;
+    }
+
     public function handler()
     {
-//        if ($this->request->getContentType() != 'json') {
-//            return $this->error(self::Rpc_Error_Invalid_Request);
-//        }
+        if ($this->request->getContentType() != 'json') {
+            return $this->error(self::Rpc_Error_Invalid_Request);
+        }
 
         try {
 
             if ($this->request->method() == Request::METHOD_GET) {
                 $method = $this->request->input('method');
                 $id = $this->request->input('id');
-                $params = \GuzzleHttp\json_decode($this->request->input('params'),true);
+                $params = \GuzzleHttp\json_decode($this->request->input('params'), true);
             } else {
                 list($method, $params, $id) = $this->parseJson($this->request->getContent());
             }
@@ -56,9 +67,9 @@ class JsonRpcServer extends JsonRpc
                 return $this->error(self::Rpc_Error_Invalid_Params);
             }
             $this->request->attributes->add(['tunnel_method' => $method, 'tunnel_params' => $params]);
-            app('rpc.logger')->info('server', [$id, $class,$method, $params]);
+            $this->logger && $this->logger->info('server', [$id, $class, $method, $params]);
             $ret = call_user_func_array([(new $class($id, $this->request)), $function], $params);
-            app('rpc.logger')->info('server_result', [$id, $ret]);
+            $this->logger && $this->logger->info('server_result', [$id, $ret]);
 
             return JsonResponse::create($ret);
 
@@ -67,6 +78,11 @@ class JsonRpcServer extends JsonRpc
         }
     }
 
+    /**
+     * 处理json rpc post body
+     * @param $data
+     * @return array
+     */
     protected function parseJson($data)
     {
         $data = \GuzzleHttp\json_decode($data, true);
@@ -76,36 +92,23 @@ class JsonRpcServer extends JsonRpc
         return [$method, $params, $id];
     }
 
+    /**
+     * 根据method解析出对应的class
+     * @param $method
+     * @return array|mixed
+     */
     protected function parseMethodWithMap($method)
     {
         return isset($this->map[$method]) ? $this->map[$method] : ['', ''];
     }
 
     /**
-     * thisis
-     * @param string $method 参数名称
-     * @return array 返回结果
+     * 检查调用方式是否足够
+     * @param $class
+     * @param $method
+     * @param $parameters
+     * @return bool
      */
-//    protected function parseMethod($method)
-//    {
-//        $method = explode('.', $method);
-//
-//        if (count($method) < 2) {
-//            return ['', ''];
-//        }
-//
-//        $function = array_pop($method);
-//        $class = 'Rpc' . ucwords(array_pop($method));
-//
-//        foreach ($method as $one) {
-//            $class = ucwords($one) . '\\' . $class;
-//        }
-//
-//        $class = "App\Rpc\\$class";
-//        return [$class, $function];
-//    }
-
-
     protected function isEnoughParameter($class, $method, $parameters)
     {
         $r = new \ReflectionMethod($class, $method);
