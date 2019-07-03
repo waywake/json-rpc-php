@@ -96,7 +96,7 @@ class Client extends JsonRpc
         try {
             $headers = [
                 'X-Client-App' => $this->config['app'],
-	            'X-Request-Id' => app('request')->header('X-Request-Id')
+	            'X-Request-Id' => app('request')->header('X-Request-Id', md5(uniqid()))
             ];
             app('rpc.logger')->info("client_request", array_merge($this->server_config, $payload));
             $resp = $this->http->request('POST', $uri, array_merge([
