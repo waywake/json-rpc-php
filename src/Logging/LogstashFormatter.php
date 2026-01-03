@@ -23,15 +23,10 @@ class LogstashFormatter extends NormalizerFormatter
     }
 
     /**
-     * @param array|LogRecord $record
+     * @param LogRecord $record
      */
-    public function format(array|LogRecord $record): string
+    public function format(LogRecord $record): string
     {
-        // Handle Monolog 3.x LogRecord object
-        if ($record instanceof LogRecord) {
-            $record = $record->toArray();
-        }
-
         $record = parent::format($record);
         $message = array(
             '@timestamp' => $record['datetime'],
