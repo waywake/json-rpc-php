@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3876393564f12e2eac26e7961cc9eded",
+    "content-hash": "2343bd3930dcfca809960950e96bf0f6",
     "packages": [
         {
             "name": "brick/math",
@@ -1054,11 +1054,17 @@
         },
         {
             "name": "itxq/api-doc-php",
-            "version": "v1.1.4",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:waywake/rpc-doc-php.git",
-                "reference": "6ba37efae51d5d57cf4b4c339b0e2e2d39bee09c"
+                "url": "https://github.com/itxq/api-doc-php.git",
+                "reference": "79ac71cf09da49491cfb92722d6f6e13ad8f6482"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/itxq/api-doc-php/zipball/79ac71cf09da49491cfb92722d6f6e13ad8f6482",
+                "reference": "79ac71cf09da49491cfb92722d6f6e13ad8f6482",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.6.0"
@@ -1069,6 +1075,7 @@
                     "itxq\\apidoc\\": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache-2.0"
             ],
@@ -1079,7 +1086,11 @@
                 }
             ],
             "description": "api-doc-php",
-            "time": "2019-02-19T06:46:36+00:00"
+            "support": {
+                "issues": "https://github.com/itxq/api-doc-php/issues",
+                "source": "https://github.com/itxq/api-doc-php/tree/master"
+            },
+            "time": "2018-06-24T04:20:25+00:00"
         },
         {
             "name": "laravel/framework",

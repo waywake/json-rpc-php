@@ -1,5 +1,5 @@
 {
-    "name": "paidian/json-rpc",
+    "name": "waywake/json-rpc",
     "type": "library",
     "description": "json rpc server/client.",
     "require": {
@@ -21,11 +21,5 @@
     },
     "suggest": {
         "influxdb/influxdb-php": "For RPC monitoring (deprecated, optional)"
-    },
-    "repositories": {
-        "rpc-doc-php": {
-            "type": "git",
-            "url": "git@github.com:waywake/rpc-doc-php.git"
-        }
     }
 }
