@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\View\Factory;
 use itxq\apidoc\BootstrapApiDoc;
 use JsonRpc\Exception\RpcServerException;
-use Monolog\Logger;
 
 /**
  * Class JsonRpcTool
@@ -16,15 +15,15 @@ use Monolog\Logger;
 class JsonRpcTool
 {
 
-    protected $config;
-    protected $classes;
+    protected array $config;
+    protected array $classes = [];
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         $this->config = $config;
     }
 
-    public function render()
+    public function render(): string
     {
         /**
          * @var $request Request
@@ -36,7 +35,7 @@ class JsonRpcTool
          */
         $view = view();
 
-        $params = json_decode($request->input('params', "[\r\n]"), true);
+        $params = json_decode($request->input('params', "[\r\n]"), true) ?? [];
         $method = $request->input('method');
         if ($request->method() == Request::METHOD_POST) {
             try {
@@ -79,7 +78,7 @@ class JsonRpcTool
             $view->file(__DIR__ . '/../views/tool.blade.php');
     }
 
-    public function getEndpoint()
+    public function getEndpoint(): string
     {
 
         /**
@@ -89,12 +88,12 @@ class JsonRpcTool
         return $request->getSchemeAndHttpHost() . '/rpc/json-rpc-v2.json';
     }
 
-    public function getMethods()
+    public function getMethods(): array
     {
         return $this->config['map'];
     }
 
-    protected function desc($class, $method)
+    protected function desc(string $class, string $method): string
     {
         if (!isset($this->classes[$class])) {
             $reflector = new \ReflectionClass($class);
@@ -103,6 +102,7 @@ class JsonRpcTool
             $reflector = $this->classes[$class];
         }
 
-        return str_replace("/**\n", '', $reflector->getMethod($method)->getDocComment());
+        $comment = $reflector->getMethod($method)->getDocComment();
+        return str_replace("/**\n", '', $comment ?: '');
     }
 }

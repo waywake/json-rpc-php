@@ -13,22 +13,32 @@ class ClientServiceProvider extends BaseServiceProvider
     /**
      * @throws RpcServerException
      */
-    public function register()
+    public function register(): void
     {
         parent::register();
+
         $config = config('rpc');
         if (!is_array($config)) {
             throw new RpcServerException("Application's Rpc Client Config Undefind", 500);
         }
+
         $this->app->singleton('rpc', function () use ($config) {
             $client = new Client($config);
-            $client->setLogger($this->logger);
+            $logger = $this->getLogger();
+            if ($logger) {
+                $client->setLogger($logger);
+            }
             return $client;
         });
 
         foreach ($config['client'] as $k => $item) {
             $this->app->singleton('rpc.' . $k, function () use ($k, $config) {
-                return (new Client($config))->endpoint($k);
+                $client = (new Client($config))->endpoint($k);
+                $logger = $this->getLogger();
+                if ($logger) {
+                    $client->setLogger($logger);
+                }
+                return $client;
             });
         }
     }

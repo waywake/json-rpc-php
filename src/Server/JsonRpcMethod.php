@@ -3,21 +3,22 @@
 namespace JsonRpc\Server;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use JsonRpc\Exception\RpcServerException;
 use JsonRpc\JsonRpc;
 
 class JsonRpcMethod extends JsonRpc
 {
-    protected $id;
-    protected $request;
+    protected mixed $id;
+    protected Request $request;
 
-    final public function __construct($id, $request)
+    final public function __construct($id, Request $request)
     {
         $this->id = $id;
         $this->request = $request;
     }
 
-    public function response($result)
+    public function response(array $result): array
     {
         return [
             'jsonrpc' => '2.0',
@@ -26,7 +27,7 @@ class JsonRpcMethod extends JsonRpc
         ];
     }
 
-    public function error($code, $msg)
+    public function error(int $code, string|array $msg): array
     {
 
         return is_string($msg)
@@ -42,7 +43,7 @@ class JsonRpcMethod extends JsonRpc
                 'jsonrpc' => '2.0',
                 'error' => [
                     'code' => $code,
-                    'message' => self::ErrorMsg[$code],
+                    'message' => self::ErrorMsg[$code] ?? 'Unknown error',
                     'data' => $msg
                 ],
                 'id' => $this->id

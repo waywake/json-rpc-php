@@ -19,15 +19,24 @@ class LumenServerServiceProvider extends BaseServiceProvider
     protected $app;
 
     /**
-     * @var JsonRpcServer
+     * @var JsonRpcServer|null
      */
-    protected $server;
+    protected ?JsonRpcServer $server = null;
 
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
-        $this->app->middleware(TunnelMiddleware::class);
-        $this->app->routeMiddleware(['rpc.security' => Security::class]);
+
+        // Lumen 11: Middleware registration moved to bootstrap/app.php
+        // Users must register middleware manually:
+        // $app->middleware([TunnelMiddleware::class]);
+        // $app->routeMiddleware(['rpc.security' => Security::class]);
+
+        $this->registerRoutes();
+    }
+
+    protected function registerRoutes(): void
+    {
         $this->app->router->group([
             'prefix' => 'rpc',
             'middleware' => 'rpc.security',
@@ -40,7 +49,10 @@ class LumenServerServiceProvider extends BaseServiceProvider
             }
             $callback = function () use ($config) {
                 $server = new JsonRpcServer($config);
-                $server->setLogger($this->logger);
+                $logger = $this->getLogger();
+                if ($logger) {
+                    $server->setLogger($logger);
+                }
                 return $server->handler();
             };
 
@@ -71,7 +83,7 @@ class LumenServerServiceProvider extends BaseServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         parent::register();
     }

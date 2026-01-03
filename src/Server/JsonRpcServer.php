@@ -10,38 +10,24 @@ use Psr\Log\LoggerInterface;
 
 class JsonRpcServer extends JsonRpc
 {
-    /**
-     * @var Request
-     */
-    public $request;
+    public Request $request;
+    protected ?LoggerInterface $logger = null;
+    protected array $config;
+    protected array $map;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var  array 配置
-     */
-    protected $config;
-
-    /**
-     * @var array rpc.server.map rpc方法
-     */
-    protected $map;
-
-    public function __construct($config)
+    public function __construct(array $config)
     {
         $this->config = $config;
         $this->request = function_exists('app') ? app('request') : Request::capture();
         $this->map = $config['map'];
     }
 
-    public function setLogger($logger){
+    public function setLogger(?LoggerInterface $logger): void
+    {
         $this->logger = $logger;
     }
 
-    public function handler()
+    public function handler(): JsonResponse
     {
         if ($this->request->getContentType() != 'json') {
             return $this->error(self::Rpc_Error_Invalid_Request);
@@ -52,7 +38,12 @@ class JsonRpcServer extends JsonRpc
             if ($this->request->method() == Request::METHOD_GET) {
                 $method = $this->request->input('method');
                 $id = $this->request->input('id');
-                $params = \GuzzleHttp\json_decode($this->request->input('params'), true);
+
+                // Guzzle 7+ change: Use native json_decode instead of \GuzzleHttp\json_decode()
+                $params = json_decode($this->request->input('params'), true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new \InvalidArgumentException('Invalid JSON in params');
+                }
             } else {
                 list($method, $params, $id) = $this->parseJson($this->request->getContent());
             }
@@ -80,36 +71,36 @@ class JsonRpcServer extends JsonRpc
 
     /**
      * 处理json rpc post body
-     * @param $data
+     * @param string $data
      * @return array
      */
-    protected function parseJson($data)
+    protected function parseJson(string $data): array
     {
-        $data = \GuzzleHttp\json_decode($data, true);
-        $method = $data['method'];
-        $params = $data['params'];
-        $id = $data['id'];
+        // Guzzle 7+ change: Use native json_decode instead of \GuzzleHttp\json_decode()
+        $data = json_decode($data, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException('Invalid JSON');
+        }
+
+        $method = $data['method'] ?? '';
+        $params = $data['params'] ?? [];
+        $id = $data['id'] ?? null;
+
         return [$method, $params, $id];
     }
 
     /**
      * 根据method解析出对应的class
-     * @param $method
-     * @return array|mixed
      */
-    protected function parseMethodWithMap($method)
+    protected function parseMethodWithMap(string $method): array
     {
-        return isset($this->map[$method]) ? $this->map[$method] : ['', ''];
+        return $this->map[$method] ?? ['', ''];
     }
 
     /**
      * 检查调用方式是否足够
-     * @param $class
-     * @param $method
-     * @param $parameters
-     * @return bool
      */
-    protected function isEnoughParameter($class, $method, $parameters)
+    protected function isEnoughParameter(string $class, string $method, array $parameters): bool
     {
         $r = new \ReflectionMethod($class, $method);
         $params = $r->getParameters();
@@ -123,10 +114,10 @@ class JsonRpcServer extends JsonRpc
         return count($parameters) >= $n;
     }
 
-    protected function error($code, $msg = null, $id = null)
+    protected function error(int $code, ?string $msg = null, $id = null): JsonResponse
     {
         if ($msg === null) {
-            $msg = isset(self::ErrorMsg[$code]) ? self::ErrorMsg[$code] : 'undefined';
+            $msg = self::ErrorMsg[$code] ?? 'undefined';
         }
 
         return JsonResponse::create([

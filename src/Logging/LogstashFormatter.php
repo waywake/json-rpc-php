@@ -8,10 +8,11 @@
 namespace JsonRpc\Logging;
 
 use Monolog\Formatter\NormalizerFormatter;
+use Monolog\LogRecord;
 
 class LogstashFormatter extends NormalizerFormatter
 {
-    protected $hostname;
+    protected string $hostname;
 
     public function __construct()
     {
@@ -21,8 +22,16 @@ class LogstashFormatter extends NormalizerFormatter
         $this->hostname = gethostname();
     }
 
-    public function format(array $record)
+    /**
+     * @param array|LogRecord $record
+     */
+    public function format(array|LogRecord $record): string
     {
+        // Handle Monolog 3.x LogRecord object
+        if ($record instanceof LogRecord) {
+            $record = $record->toArray();
+        }
+
         $record = parent::format($record);
         $message = array(
             '@timestamp' => $record['datetime'],

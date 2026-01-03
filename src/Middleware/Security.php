@@ -10,6 +10,7 @@ namespace JsonRpc\Middleware;
 
 use Closure;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class Security
@@ -20,11 +21,11 @@ class Security
 
 
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param Closure $next
      * @return JsonResponse|mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): JsonResponse|mixed
     {
         $ip = $request->getClientIp();
         if ($this->isClientIPPermitted($ip) == false) {
@@ -35,10 +36,10 @@ class Security
 
     /**
      * 内网ip判断
-     * @param $ip
+     * @param string $ip
      * @return bool
      */
-    private function isClientIPPermitted($ip)
+    private function isClientIPPermitted(string $ip): bool
     {
         if (app()->environment('develop', 'local')) {
             return true;
