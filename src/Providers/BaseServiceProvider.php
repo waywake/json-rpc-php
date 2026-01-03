@@ -23,8 +23,16 @@ class BaseServiceProvider extends ServiceProvider
     protected function setupConfig(): void
     {
         $source = realpath(__DIR__ . '/../../config/rpc.php');
-        $this->app->configure('rpc');
+        if (method_exists($this->app, 'configure')) {
+            $this->app->configure('rpc');
+        }
         $this->mergeConfigFrom($source, 'rpc');
+
+        if (method_exists($this->app, 'configPath')) {
+            $this->publishes([
+                $source => $this->app->configPath('rpc.php'),
+            ], 'rpc-config');
+        }
     }
 
     public function register(): void

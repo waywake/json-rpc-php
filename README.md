@@ -24,8 +24,13 @@ composer require paidian/json-rpc:dev-master
 * 注册服务
 
 ```php
+// Lumen 11
 $app->register(\JsonRpc\Providers\LumenServerServiceProvider::class); //rpc server
 $app->register(\JsonRpc\Providers\ClientServiceProvider::class); // rpc client
+
+// Laravel 12 (config/app.php -> providers)
+JsonRpc\Providers\LaravelServerServiceProvider::class, // rpc server
+JsonRpc\Providers\ClientServiceProvider::class, // rpc client
 ```
 
 ### 配置
@@ -78,7 +83,7 @@ return [
 发布的rpc方法必须在此文件注册，否则无法访问
 ```
 
-####lumen配置config/rpc.php
+####Lumen/Laravel配置config/rpc.php
 ```php
 <?php
 return [

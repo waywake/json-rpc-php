@@ -5,8 +5,8 @@
     "require": {
         "php": "^8.3",
         "guzzlehttp/guzzle": "^7.8|^8.0",
-        "illuminate/support": "^11.0",
-        "illuminate/http": "^11.0",
+        "illuminate/support": "^12.0",
+        "illuminate/http": "^12.0",
         "monolog/monolog": "^3.5",
         "itxq/api-doc-php": "^1.1"
     },
@@ -17,7 +17,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0|^11.0",
-        "laravel/lumen-framework": "^11.0"
+        "laravel/framework": "^12.0"
     },
     "suggest": {
         "influxdb/influxdb-php": "For RPC monitoring (deprecated, optional)"
