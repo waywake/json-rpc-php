@@ -103,7 +103,7 @@ class Client extends JsonRpc
      * @return array
      * @throws RpcServerException
      */
-    protected function post(array $payload, array $options = []): array
+    protected function post(array $payload, array $options = []): mixed
     {
         $uri = 'rpc/json-rpc-v2.json?app=' . $this->config['app'];
 
