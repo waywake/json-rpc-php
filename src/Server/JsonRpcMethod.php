@@ -18,7 +18,7 @@ class JsonRpcMethod extends JsonRpc
         $this->request = $request;
     }
 
-    public function response(array $result): array
+    public function response(mixed $result): array
     {
         return [
             'jsonrpc' => '2.0',
