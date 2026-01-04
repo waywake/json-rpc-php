@@ -62,7 +62,7 @@ class JsonRpcServer extends JsonRpc
             $ret = call_user_func_array([(new $class($id, $this->request)), $function], $params);
             $this->logger && $this->logger->info('server_result', [$id, $ret]);
 
-            return JsonResponse::create($ret);
+            return new JsonResponse($ret);
 
         } catch (\InvalidArgumentException $e) {
             return $this->error(self::Rpc_Error_Parse_Error);
@@ -120,7 +120,7 @@ class JsonRpcServer extends JsonRpc
             $msg = self::ErrorMsg[$code] ?? 'undefined';
         }
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'jsonrpc' => '2.0',
             'error' => [
                 'code' => $code,
