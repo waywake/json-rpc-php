@@ -75,7 +75,7 @@ class Client extends JsonRpc
      * @return array
      * @throws RpcServerException
      */
-    public function call(string $name, array $arguments, array $options = []): array
+    public function call(string $name, array $arguments, array $options = []): mixed
     {
         $payload = [
             'jsonrpc' => '2.0',
