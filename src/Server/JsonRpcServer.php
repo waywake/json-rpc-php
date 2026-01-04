@@ -29,7 +29,7 @@ class JsonRpcServer extends JsonRpc
 
     public function handler(): JsonResponse
     {
-        if ($this->request->getContentType() != 'json') {
+        if (!$this->request->isJson()) {
             return $this->error(self::Rpc_Error_Invalid_Request);
         }
 
