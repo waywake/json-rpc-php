@@ -54,6 +54,9 @@ class JsonRpcServer extends JsonRpc
                 return $this->error(self::Rpc_Error_NOT_FOUND);
             }
 
+            // Normalize associative params to avoid PHP 8 named-parameter errors.
+            $params = $this->normalizeParams($class, $function, $params);
+
             if (!$this->isEnoughParameter($class, $function, $params)) {
                 return $this->error(self::Rpc_Error_Invalid_Params);
             }
@@ -95,6 +98,47 @@ class JsonRpcServer extends JsonRpc
     protected function parseMethodWithMap(string $method): array
     {
         return $this->map[$method] ?? ['', ''];
+    }
+
+    /**
+     * PHP 8 treats string keys in call_user_func_array as named parameters.
+     * Fall back to positional args unless all keys match method parameters.
+     */
+    protected function normalizeParams(string $class, string $method, array $params): array
+    {
+        if (!$params) {
+            return $params;
+        }
+
+        $hasStringKeys = false;
+        foreach (array_keys($params) as $key) {
+            if (!is_int($key)) {
+                $hasStringKeys = true;
+                break;
+            }
+        }
+        if (!$hasStringKeys) {
+            return $params;
+        }
+
+        $ref = new \ReflectionMethod($class, $method);
+        $paramNames = array_map(static fn($param) => $param->getName(), $ref->getParameters());
+
+        $keys = array_keys($params);
+        foreach ($keys as $key) {
+            if (!in_array($key, $paramNames, true)) {
+                return array_values($params);
+            }
+        }
+
+        $normalized = [];
+        foreach ($paramNames as $name) {
+            if (array_key_exists($name, $params)) {
+                $normalized[] = $params[$name];
+            }
+        }
+
+        return $normalized;
     }
 
     /**
