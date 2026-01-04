@@ -25,7 +25,7 @@ class Security
      * @param Closure $next
      * @return JsonResponse|mixed
      */
-    public function handle(Request $request, Closure $next): JsonResponse|mixed
+    public function handle(Request $request, Closure $next): mixed
     {
         $ip = $request->getClientIp();
         if ($this->isClientIPPermitted($ip) == false) {
