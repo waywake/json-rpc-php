@@ -133,7 +133,7 @@ class Client extends JsonRpc
         try {
             // GUZZLE 7+ CHANGE: Use native json_decode() instead of \GuzzleHttp\json_decode()
             $body = json_decode($resp->getBody()->getContents(), true);
-            $this->logger && $this->logger->info("client_response", $body);
+            $this->logger && $this->logger->debug("client_response", $body);
             if (empty($body)) {
                 throw new RpcServerException('http response empty', JsonRpc::Rpc_Error_System_Error);
             }
