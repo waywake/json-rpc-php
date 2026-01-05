@@ -60,7 +60,7 @@ class Client extends JsonRpc
         $this->server_config = $this->config['client'][$k];
 
         $default = [
-            'timeout' => 3,
+            'timeout' => 10,
             'allow_redirects' => false,
         ];
 
