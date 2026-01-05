@@ -61,9 +61,9 @@ class JsonRpcServer extends JsonRpc
                 return $this->error(self::Rpc_Error_Invalid_Params);
             }
             $this->request->attributes->add(['tunnel_method' => $method, 'tunnel_params' => $params]);
-            $this->logger && $this->logger->info('server', [$id, $class, $method, $params]);
+            $this->logger && $this->logger->debug('server', [$id, $class, $method, $params]);
             $ret = call_user_func_array([(new $class($id, $this->request)), $function], $params);
-            $this->logger && $this->logger->info('server_result', [$id, $ret]);
+            $this->logger && $this->logger->debug('server_result', [$id, $ret]);
 
             return new JsonResponse($ret);
 
