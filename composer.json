@@ -2,6 +2,7 @@
   "name": "waywake/json-rpc",
   "type": "library",
   "description": "json rpc server/client.",
+  "license": "MIT",
   "require": {
     "php": "^8.4",
     "guzzlehttp/guzzle": "^7.8|^8.0",
