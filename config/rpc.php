@@ -10,6 +10,10 @@ return [
     //rpc日志格式
     'log_formatter' => JsonRpc\Logging\LogstashFormatter::class,
 
+    'monitor' => [
+        'enabled' => env('RPC_MONITOR_SWITCH', false),
+    ],
+
     /**
      * json rpc server 配置
      */

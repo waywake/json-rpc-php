@@ -29,23 +29,26 @@ class JsonRpcServer extends JsonRpc
 
     public function handler(): JsonResponse
     {
-        if (!$this->request->isJson()) {
+        if ($this->request->method() !== Request::METHOD_GET && !$this->request->isJson()) {
             return $this->error(self::Rpc_Error_Invalid_Request);
         }
 
         try {
 
             if ($this->request->method() == Request::METHOD_GET) {
-                $method = $this->request->input('method');
+                $method = (string) $this->request->input('method', '');
                 $id = $this->request->input('id');
 
                 // Guzzle 7+ change: Use native json_decode instead of \GuzzleHttp\json_decode()
-                $params = json_decode($this->request->input('params'), true);
+                $params = json_decode($this->request->input('params', '[]'), true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new \InvalidArgumentException('Invalid JSON in params');
                 }
             } else {
                 list($method, $params, $id) = $this->parseJson($this->request->getContent());
+            }
+            if (!is_array($params)) {
+                return $this->error(self::Rpc_Error_Invalid_Params, null, $id);
             }
 
             list($class, $function) = $this->parseMethodWithMap($method);
@@ -84,8 +87,11 @@ class JsonRpcServer extends JsonRpc
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \InvalidArgumentException('Invalid JSON');
         }
+        if (!is_array($data) || array_is_list($data)) {
+            throw new \InvalidArgumentException('Invalid JSON-RPC payload');
+        }
 
-        $method = $data['method'] ?? '';
+        $method = is_string($data['method'] ?? null) ? $data['method'] : '';
         $params = $data['params'] ?? [];
         $id = $data['id'] ?? null;
 

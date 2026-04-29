@@ -5,8 +5,6 @@ namespace JsonRpc;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Client as GuzzleClient;
 use JsonRpc\Exception\RpcServerException;
-use JsonRpc\Server\JsonRpcBase;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 class Client extends JsonRpc
@@ -19,9 +17,9 @@ class Client extends JsonRpc
 
     /**
      * request id
-     * @var string
+     * @var int
      */
-    protected string $id;
+    protected int $id;
 
     /**
      * @var \GuzzleHttp\Client
@@ -89,10 +87,10 @@ class Client extends JsonRpc
     /**
      * @param string $name
      * @param array $arguments
-     * @return array
+     * @return mixed
      * @throws RpcServerException
      */
-    public function __call(string $name, array $arguments): array
+    public function __call(string $name, array $arguments): mixed
     {
         return $this->call($name, $arguments);
     }
@@ -124,7 +122,7 @@ class Client extends JsonRpc
                 self::ErrorMsg[JsonRpc::Rpc_Error_Internal_Error] ?? 'Internal error',
                 JsonRpc::Rpc_Error_Internal_Error
             );
-            if (function_exists('env') && env("APP_DEBUG") == true) {
+            if ($this->isDebug()) {
                 $ex->setResponse($e->getResponse());
             }
             throw $ex;
@@ -148,11 +146,16 @@ class Client extends JsonRpc
         } catch (\InvalidArgumentException $e) {
             $this->logger && $this->logger->error('client_decode_error', array_merge($this->server_config ?? [], $payload));
             $ex = new RpcServerException($e->getMessage(), JsonRpc::Rpc_Error_Parse_Error);
-            if (function_exists('env') && env("APP_DEBUG") == true) {
+            if ($this->isDebug()) {
                 $ex->setResponse($resp);
             }
             throw $ex;
         }
+    }
+
+    protected function isDebug(): bool
+    {
+        return function_exists('config') && (bool) config('app.debug', false);
     }
 
     /**

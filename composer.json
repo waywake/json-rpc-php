@@ -1,25 +1,34 @@
 {
-    "name": "waywake/json-rpc",
-    "type": "library",
-    "description": "json rpc server/client.",
-    "require": {
-        "php": "^8.3",
-        "guzzlehttp/guzzle": "^7.8|^8.0",
-        "illuminate/support": "^12.0",
-        "illuminate/http": "^12.0",
-        "monolog/monolog": "^3.5",
-        "itxq/api-doc-php": "^1.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "JsonRpc\\": "src/"
-        }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^10.0|^11.0",
-        "laravel/framework": "^12.0"
-    },
-    "suggest": {
-        "influxdb/influxdb-php": "For RPC monitoring (deprecated, optional)"
+  "name": "waywake/json-rpc",
+  "type": "library",
+  "description": "json rpc server/client.",
+  "require": {
+    "php": "^8.4",
+    "guzzlehttp/guzzle": "^7.8|^8.0",
+    "illuminate/support": "^12.0",
+    "illuminate/http": "^12.0",
+    "monolog/monolog": "^3.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "JsonRpc\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0|^11.0",
+    "laravel/framework": "^12.0"
+  },
+  "scripts": {
+    "test": "phpunit",
+    "test:lint": "find src config tests -name '*.php' -print0 | xargs -0 -n1 php -l",
+    "test:coverage": "XDEBUG_MODE=coverage phpunit --coverage-text"
+  },
+  "suggest": {
+    "influxdb/influxdb-php": "For RPC monitoring (deprecated, optional)"
+  }
 }

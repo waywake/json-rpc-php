@@ -3,8 +3,8 @@
 namespace JsonRpc\Server;
 
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Factory;
-use itxq\apidoc\BootstrapApiDoc;
 use JsonRpc\Exception\RpcServerException;
 
 /**
@@ -16,14 +16,13 @@ class JsonRpcTool
 {
 
     protected array $config;
-    protected array $classes = [];
 
     public function __construct(array $config)
     {
         $this->config = $config;
     }
 
-    public function render(): string
+    public function render(): View
     {
         /**
          * @var $request Request
@@ -50,29 +49,13 @@ class JsonRpcTool
                 );
             }
         }
-        $methods = [];
-        foreach ($this->config['map'] as $key => $item) {
-            if (!in_array($item[0], $methods)) {
-                $methods[] = $item[0];
-            }
-        }
-        $config = [
-            'class' => $methods,
-            'filter_method' => [],
-        ];
-
-        $api = new BootstrapApiDoc($config);
-        $data = $api->getApiDocTmp();
         $methods = $this->getMethods();
-        $view->share('data',json_encode($data));
+        $view->share('data', json_encode($this->getDocData(), JSON_UNESCAPED_UNICODE));
         $view->share('endpoint', $this->getEndpoint());
         $view->share('methods', $methods);
         $view->share('method', $method);
         $view->share('params', json_encode($params, JSON_PRETTY_PRINT));
 
-        foreach ($methods as $name => $class) {
-            $desc[$name] = $this->desc($class[0], $class[1]);
-        }
         return $view->exists('tool') ?
             $view->make('tool') :
             $view->file(__DIR__ . '/../views/tool.blade.php');
@@ -93,16 +76,88 @@ class JsonRpcTool
         return $this->config['map'];
     }
 
-    protected function desc(string $class, string $method): string
+    protected function getDocData(): array
     {
-        if (!isset($this->classes[$class])) {
-            $reflector = new \ReflectionClass($class);
-            $this->classes[$class] = $reflector;
-        } else {
-            $reflector = $this->classes[$class];
+        $data = [];
+        foreach ($this->config['map'] as $name => $item) {
+            if (!is_array($item) || count($item) < 2) {
+                continue;
+            }
+
+            [$class, $method] = $item;
+            $data[$name] = [
+                'title' => $name,
+                'method' => $name,
+                'param' => [],
+                'return' => [],
+                'code' => [],
+            ];
+
+            if (!class_exists($class) || !method_exists($class, $method)) {
+                continue;
+            }
+
+            $reflection = new \ReflectionMethod($class, $method);
+            $doc = $this->parseDocComment($reflection->getDocComment() ?: '');
+            $data[$name] = array_merge($data[$name], $doc);
+
+            if (empty($data[$name]['param'])) {
+                foreach ($reflection->getParameters() as $parameter) {
+                    $data[$name]['param'][] = [
+                        'param_name' => $parameter->getName(),
+                        'param_type' => $parameter->hasType() ? (string) $parameter->getType() : 'mixed',
+                        'param_title' => '',
+                        'param_default' => $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : '',
+                        'param_require' => $parameter->isOptional() ? '否' : '是',
+                    ];
+                }
+            }
         }
 
-        $comment = $reflector->getMethod($method)->getDocComment();
-        return str_replace("/**\n", '', $comment ?: '');
+        return $data;
+    }
+
+    protected function parseDocComment(string $comment): array
+    {
+        $data = [
+            'param' => [],
+            'return' => [],
+            'code' => [],
+        ];
+
+        foreach (preg_split('/\R/', $comment) ?: [] as $line) {
+            $line = trim(preg_replace('/^\s*\*\s?/', '', $line));
+            if (preg_match('/^@title\s+(.+)$/u', $line, $matches)) {
+                $data['title'] = $matches[1];
+                continue;
+            }
+            if (preg_match('/^@param\s+(\S+)\s+(\S+)(?:\s+(.+))?$/u', $line, $matches)) {
+                $parts = preg_split('/\s+/u', $matches[3] ?? '', 3);
+                $data['param'][] = [
+                    'param_type' => $matches[1],
+                    'param_name' => $matches[2],
+                    'param_title' => $parts[0] ?? '',
+                    'param_default' => $parts[1] ?? '',
+                    'param_require' => $parts[2] ?? '',
+                ];
+                continue;
+            }
+            if (preg_match('/^@return\s+(\S+)\s+(\S+)(?:\s+(.+))?$/u', $line, $matches)) {
+                $data['return'][] = [
+                    'return_type' => $matches[1],
+                    'return_name' => $matches[2],
+                    'return_title' => $matches[3] ?? '',
+                ];
+                continue;
+            }
+            if (preg_match('/^@code\s+(\S+)(?:\s+(.+))?$/u', $line, $matches)) {
+                $data['code'][] = [
+                    'code' => $matches[1],
+                    'content' => $matches[2] ?? '',
+                ];
+            }
+        }
+
+        return $data;
     }
 }

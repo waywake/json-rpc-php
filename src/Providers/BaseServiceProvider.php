@@ -42,6 +42,7 @@ class BaseServiceProvider extends ServiceProvider
         $stream = new StreamHandler($config['log_path'], Level::Debug);
         $stream->setFormatter(new $config['log_formatter']());
         $this->logger->pushHandler($stream);
+        $this->app->instance('rpc.logger', $this->logger);
     }
 
     public function getLogger(): ?LoggerInterface

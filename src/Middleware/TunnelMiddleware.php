@@ -37,7 +37,7 @@ class TunnelMiddleware
 	{
 		// Filter tool return results
 		if ($response instanceof JsonResponse) {
-			if (app()->environment('develop', 'production') && env('RPC_MONITOR_SWITCH') == 1) {
+			if (app()->environment('develop', 'production') && (bool) config('rpc.monitor.enabled', false)) {
 				$content = $response->getOriginalContent();
 				$status = isset($content['error']) ? $content['error']['code'] : 200;
 
@@ -62,7 +62,7 @@ class TunnelMiddleware
 				new \InfluxDB\Point(
 					'monitor',
 					1,
-					['app' => env('APP_NAME'), 'status' => $status, 'env' => app()->environment()],
+					['app' => config('app.name'), 'status' => $status, 'env' => app()->environment()],
 					['status_value' => $status == 200 ? $status : -$status]
 				)
 			);

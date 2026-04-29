@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 use JsonRpc\Exception\RpcServerException;
 use JsonRpc\Middleware\Security;
 use JsonRpc\Middleware\TunnelMiddleware;
-use JsonRpc\Server\JsonRpcDoc;
 use JsonRpc\Server\JsonRpcServer;
 use JsonRpc\Server\JsonRpcTool;
 
@@ -38,16 +37,11 @@ class LaravelServerServiceProvider extends BaseServiceProvider
     {
         Route::prefix('rpc')
             ->middleware(['rpc.security'])
-            ->group(function () {
-                $config = config('rpc.server');
-                $map = require_once $config['map'];
-                $config['map'] = $map;
-                if (!is_array($config)) {
-                    throw new RpcServerException("Application's Rpc Server Config Undefind", 500);
-                }
-                $callback = function () use ($config) {
+            ->group(static function () {
+                $callback = static function () {
+                    $config = self::serverConfig();
                     $server = new JsonRpcServer($config);
-                    $logger = $this->getLogger();
+                    $logger = app()->bound('rpc.logger') ? app('rpc.logger') : null;
                     if ($logger) {
                         $server->setLogger($logger);
                     }
@@ -57,20 +51,40 @@ class LaravelServerServiceProvider extends BaseServiceProvider
                 Route::post('json-rpc-v2.json', $callback);
                 Route::get('json-rpc-v2.json', $callback);
 
-                if (function_exists('env') && env('APP_DEBUG')) {
-                    $tool = function () use ($config) {
+                if ((bool) config('app.debug', false)) {
+                    $tool = static function () {
+                        $config = self::serverConfig();
                         $tool = new JsonRpcTool($config);
                         return $tool->render();
                     };
 
                     Route::get('tool.html', $tool);
                     Route::post('tool.html', $tool);
-
-                    Route::get('doc.html', function () use ($config) {
-                        $doc = new JsonRpcDoc($config);
-                        return $doc->render();
-                    });
                 }
             });
+    }
+
+    /**
+     * @throws RpcServerException
+     */
+    protected static function serverConfig(): array
+    {
+        $config = config('rpc.server');
+        if (!is_array($config)) {
+            throw new RpcServerException("Application's Rpc Server Config Undefined", 500);
+        }
+
+        $mapPath = $config['map'] ?? null;
+        if (!is_string($mapPath) || !is_file($mapPath)) {
+            throw new RpcServerException("Application's Rpc Server Map Undefined", 500);
+        }
+
+        $map = require $mapPath;
+        if (!is_array($map)) {
+            throw new RpcServerException("Application's Rpc Server Map Invalid", 500);
+        }
+
+        $config['map'] = $map;
+        return $config;
     }
 }

@@ -15,11 +15,16 @@ class ClientServiceProvider extends BaseServiceProvider
      */
     public function register(): void
     {
+        $existingConfig = config('rpc');
+        if ($existingConfig !== null && !is_array($existingConfig)) {
+            throw new RpcServerException("Application's Rpc Client Config Undefined", 500);
+        }
+
         parent::register();
 
         $config = config('rpc');
         if (!is_array($config)) {
-            throw new RpcServerException("Application's Rpc Client Config Undefind", 500);
+            throw new RpcServerException("Application's Rpc Client Config Undefined", 500);
         }
 
         $this->app->singleton('rpc', function () use ($config) {

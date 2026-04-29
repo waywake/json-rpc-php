@@ -27,7 +27,7 @@ class Security
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $ip = $request->getClientIp();
+        $ip = $request->getClientIp() ?? '';
         if ($this->isClientIPPermitted($ip) == false) {
             return new JsonResponse("$ip is forbidden", 403);
         }

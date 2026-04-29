@@ -19,7 +19,7 @@ class LogstashFormatter extends NormalizerFormatter
         // logstash requires a ISO 8601 format date with optional millisecond precision.
         parent::__construct('Y-m-d\TH:i:s.uP');
 
-        $this->hostname = gethostname();
+        $this->hostname = gethostname() ?: 'unknown';
     }
 
     /**
@@ -31,7 +31,7 @@ class LogstashFormatter extends NormalizerFormatter
         $message = array(
             '@timestamp' => $record['datetime'],
             'host' => $this->hostname,
-            'app' => env('APP_NAME'),
+            'app' => config('app.name'),
             'env' => app()->environment(),
             'client_app' => app('request')->header('X-Client-App'),
         );

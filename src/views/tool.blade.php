@@ -23,9 +23,9 @@
             <div class="sidebar-sticky">
                 <ul id="nav-content" class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/rpc/doc.html">
+                        <a class="nav-link active" href="/rpc/tool.html">
                             <span data-feather="home"></span>
-                            文档 <span class="sr-only">(current)</span>
+                            调试工具 <span class="sr-only">(current)</span>
                         </a>
                     </li>
                     {{--<li class="nav-item">--}}
@@ -157,7 +157,7 @@
         intTable();
         var valKey =$("#method option:first-child").text();
         var data = <?php echo $data; ?>;
-        var methodArray = data[valKey];
+        var methodArray = data[valKey] || {param: [], return: [], code: []};
         changeTable(methodArray);
         if (error_empty > 0) {
             var storage = window.localStorage;
@@ -169,7 +169,7 @@
     });
     $('#method').on('change', function() {
         var valKey = $("#method").find("option:selected").text();
-        var methodArray = data[valKey];
+        var methodArray = data[valKey] || {param: [], return: [], code: []};
         intTable()
         changeTable(methodArray)
     })
@@ -236,7 +236,7 @@
         $('.nav-item').removeClass('bg-info');
         $(this).addClass('bg-info');
         $("#method").val(activeKey);
-        var methodArray = data[activeKey];
+        var methodArray = data[activeKey] || {param: [], return: [], code: []};
         intTable();
         changeTable(methodArray);
         $('#params').val(param);
