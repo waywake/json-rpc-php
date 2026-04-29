@@ -1,39 +1,17 @@
-name: Release
+name: Packagist
 
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.4"
-
-      - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
-
-      - name: Validate composer.json
-        run: composer validate --strict
-
-      - name: Run tests
-        run: composer test
-
-  update-packagist:
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Trigger Packagist update
-        run: |
-          curl --fail-with-body --show-error --silent \
-            -X POST \
-            -H 'content-type: application/json' \
-            "https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USERNAME }}&apiToken=${{ secrets.PACKAGIST_API_TOKEN }}" \
-            -d '{"repository":{"url":"https://github.com/waywake/json-rpc-php"}}'
+  update:
+    uses: waywake/actions/.github/workflows/packagist-update.yml@v2
+    with:
+      php-version: "8.5"
+      run-tests: true
+    secrets:
+      PACKAGIST_USERNAME: ${{ secrets.PACKAGIST_USERNAME }}
+      PACKAGIST_API_TOKEN: ${{ secrets.PACKAGIST_API_TOKEN }}
