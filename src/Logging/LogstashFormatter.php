@@ -1,12 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dongwei
- * Date: 2019/1/10
- * Time: 3:18 PM
- */
+
 namespace JsonRpc\Logging;
 
+use Illuminate\Container\Container;
+use Illuminate\Http\Request;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\LogRecord;
 
@@ -28,33 +25,85 @@ class LogstashFormatter extends NormalizerFormatter
     public function format(LogRecord $record): string
     {
         $record = parent::format($record);
-        $message = array(
+        $message = [
             '@timestamp' => $record['datetime'],
             'host' => $this->hostname,
-            'app' => config('app.name'),
-            'env' => app()->environment(),
-            'client_app' => app('request')->header('X-Client-App'),
-        );
+            'app' => $this->appName(),
+            'env' => $this->environment(),
+            'channel' => $record['channel'] ?? null,
+            'level' => $record['level_name'] ?? null,
+            'level_value' => $record['level'] ?? null,
+            'message' => $record['message'] ?? null,
+        ];
 
-        $request_id = app('request')->header('X-Request-Id');
-        if ($request_id) {
-            $message['request_id'] = $request_id;
-        }
-
-        // if (isset($record['channel'])) {
-        //     $message['channel'] = $record['channel'];
-        // }
-        if (isset($record['level_name'])) {
-            $message['level'] = $record['level_name'];
-        }
-        if (isset($record['message'])) {
-            $message['message'] = $record['message'];
+        $request = $this->request();
+        if ($request instanceof Request) {
+            $message = array_merge($message, [
+                'client_app' => $request->header('X-Client-App'),
+                'request_id' => $request->header('X-Request-Id'),
+                'client_ip' => $request->ip(),
+                'http_method' => $request->getMethod(),
+                'url' => $request->fullUrl(),
+            ]);
         }
 
         if (!empty($record['context'])) {
-            $message['context'] = $this->toJson($record['context']);
+            $message['context'] = $record['context'];
         }
 
-        return $this->toJson($message) . "\n";
+        if (!empty($record['extra'])) {
+            $message['extra'] = $record['extra'];
+        }
+
+        return $this->toJson($this->withoutNullValues($message)) . "\n";
+    }
+
+    protected function appName(): ?string
+    {
+        $config = $this->containerValue('config');
+
+        if ($config && method_exists($config, 'get')) {
+            return $config->get('app.name');
+        }
+
+        return null;
+    }
+
+    protected function environment(): ?string
+    {
+        $container = Container::getInstance();
+
+        if (method_exists($container, 'environment')) {
+            return $container->environment();
+        }
+
+        return null;
+    }
+
+    protected function request(): ?Request
+    {
+        $request = $this->containerValue('request');
+
+        return $request instanceof Request ? $request : null;
+    }
+
+    protected function containerValue(string $abstract): mixed
+    {
+        $container = Container::getInstance();
+
+        if (!$container->bound($abstract)) {
+            return null;
+        }
+
+        return $container->make($abstract);
+    }
+
+    /**
+     * @param array<string, mixed> $message
+     * @return array<string, mixed>
+     */
+    protected function withoutNullValues(array $message): array
+    {
+        return array_filter($message, static fn($value) => $value !== null);
     }
 }

@@ -1,11 +1,11 @@
 # waywake/json-rpc
 
-一个面向 Laravel 12 的 JSON-RPC 2.0 服务端和客户端组件。它基于 HTTP 传输、Guzzle 发起调用、Laravel 路由和服务容器注册服务，并提供调试工具页、结构化 RPC 日志和可选监控写入。
+一个面向 Laravel 12 / 13 的 JSON-RPC 2.0 服务端和客户端组件。它基于 HTTP 传输、Guzzle 发起调用、Laravel 路由和服务容器注册服务，并提供调试工具页、结构化 RPC 日志和可选监控写入。
 
 ## 环境要求
 
-- PHP `^8.3`
-- Laravel / Illuminate `^12.0`
+- PHP `^8.4`
+- Laravel / Illuminate `^12.0` 或 `^13.0`
 - Guzzle `^7.8` 或 `^8.0`
 - Monolog `^3.5`
 
@@ -30,7 +30,7 @@ php artisan vendor:publish --tag=rpc-config
 
 ## 注册服务
 
-在 Laravel 12 的 `config/app.php` 中注册服务提供者：
+在 Laravel 12 / 13 的 `config/app.php` 中注册服务提供者：
 
 ```php
 'providers' => [
@@ -248,7 +248,7 @@ http://<host>/rpc/tool.html
 
 ## 日志与监控
 
-`BaseServiceProvider` 会注册 `rpc.logger`，默认写入 `config('rpc.log_path')`。`LogstashFormatter` 会输出包含时间、主机、应用名、环境、调用方应用和请求 ID 的 JSON 日志。
+`BaseServiceProvider` 会注册 `rpc.logger`，默认写入 `config('rpc.log_path')`。`LogstashFormatter` 会输出单行 JSON，包含时间、主机、应用名、环境、channel、level、调用方应用、请求 ID、客户端 IP、HTTP 方法和 URL；`context` 与 `extra` 会保留为结构化对象，便于 Logstash / Elasticsearch 按字段检索。
 
 如果启用 `rpc.monitor.enabled` 并且项目安装了 `influxdb/influxdb-php`，`TunnelMiddleware` 会在响应结束时写入 RPC 状态指标。该依赖是可选项。
 
@@ -263,7 +263,7 @@ composer test:coverage
 composer validate --no-check-publish
 ```
 
-测试套件使用 PHPUnit，配置在 `phpunit.xml`，测试文件位于 `tests/Unit`，夹具位于 `tests/Fixtures`。当前测试规模为 59 个测试、121 个断言。当前覆盖重点包括：
+测试套件使用 PHPUnit，配置在 `phpunit.xml`，测试文件位于 `tests/Unit`，夹具位于 `tests/Fixtures`。当前测试规模为 60 个测试、134 个断言。当前覆盖重点包括：
 
 - JSON-RPC 服务端 POST / GET 分发、命名参数归一化、缺失参数、未知方法和 JSON 解析错误。
 - JSON-RPC 方法基类的成功与错误响应格式。

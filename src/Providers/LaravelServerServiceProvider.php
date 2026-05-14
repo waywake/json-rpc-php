@@ -3,11 +3,13 @@
 namespace JsonRpc\Providers;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Routing\Router;
 use JsonRpc\Exception\RpcServerException;
 use JsonRpc\Middleware\Security;
 use JsonRpc\Middleware\TunnelMiddleware;
 use JsonRpc\Server\JsonRpcServer;
 use JsonRpc\Server\JsonRpcTool;
+use Psr\Log\LoggerInterface;
 
 class LaravelServerServiceProvider extends BaseServiceProvider
 {
@@ -26,8 +28,8 @@ class LaravelServerServiceProvider extends BaseServiceProvider
 
     protected function registerMiddleware(): void
     {
-        $router = $this->app['router'];
-        if (method_exists($router, 'aliasMiddleware')) {
+        $router = $this->app->make('router');
+        if ($router instanceof Router) {
             $router->aliasMiddleware('rpc.security', Security::class);
             $router->aliasMiddleware('rpc.tunnel', TunnelMiddleware::class);
         }
@@ -41,8 +43,8 @@ class LaravelServerServiceProvider extends BaseServiceProvider
                 $callback = static function () {
                     $config = self::serverConfig();
                     $server = new JsonRpcServer($config);
-                    $logger = app()->bound('rpc.logger') ? app('rpc.logger') : null;
-                    if ($logger) {
+                    $logger = app()->bound('rpc.logger') ? app()->make('rpc.logger') : null;
+                    if ($logger instanceof LoggerInterface) {
                         $server->setLogger($logger);
                     }
                     return $server->handler();

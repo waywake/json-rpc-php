@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dongwei
- * Date: 2019/1/14
- * Time: 11:45 AM
- */
 
 namespace JsonRpc\Middleware;
 

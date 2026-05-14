@@ -112,7 +112,12 @@ class Client extends JsonRpc
                 'X-Client-App' => $this->config['app'],
                 'X-Request-Id' => $requestId,
             ];
-            $this->logger && $this->logger->info("client_request", array_merge($this->server_config ?? [], $payload));
+            $this->logger && $this->logger->info('client_request', [
+                'endpoint' => $this->server_config,
+                'rpc_id' => $payload['id'],
+                'rpc_method' => $payload['method'],
+                'params' => $payload['params'],
+            ]);
             $resp = $this->http->request('POST', $uri, array_merge([
                 'headers' => $headers,
                 'json' => $payload,
@@ -131,7 +136,11 @@ class Client extends JsonRpc
         try {
             // GUZZLE 7+ CHANGE: Use native json_decode() instead of \GuzzleHttp\json_decode()
             $body = json_decode($resp->getBody()->getContents(), true);
-            $this->logger && $this->logger->debug("client_response", $body);
+            $this->logger && $this->logger->debug('client_response', [
+                'rpc_id' => $payload['id'],
+                'rpc_method' => $payload['method'],
+                'response' => $body,
+            ]);
             if (empty($body)) {
                 throw new RpcServerException('http response empty', JsonRpc::Rpc_Error_System_Error);
             }
@@ -144,7 +153,13 @@ class Client extends JsonRpc
             return $body['result'];
 
         } catch (\InvalidArgumentException $e) {
-            $this->logger && $this->logger->error('client_decode_error', array_merge($this->server_config ?? [], $payload));
+            $this->logger && $this->logger->error('client_decode_error', [
+                'endpoint' => $this->server_config,
+                'rpc_id' => $payload['id'],
+                'rpc_method' => $payload['method'],
+                'params' => $payload['params'],
+                'exception' => $e,
+            ]);
             $ex = new RpcServerException($e->getMessage(), JsonRpc::Rpc_Error_Parse_Error);
             if ($this->isDebug()) {
                 $ex->setResponse($resp);
